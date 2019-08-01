@@ -8,7 +8,7 @@ public class BogoSort {
 
     /**
      * @param vetor
-     * @return 
+     * @return
      */
     public int[] sort(int[] vetor) {
         // Verifica se o vetor está ordenado
