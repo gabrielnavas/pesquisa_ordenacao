@@ -1,5 +1,6 @@
 package main;
 
+import java.util.Scanner;
 import my_algos.ArvoreAbb;
 import my_algos.Pilha;
 import my_algos.Vetor;
@@ -43,6 +44,20 @@ public class Main {
     public static void main(String[] args) {
 //        pilha();
 //        vetor();
-        arvore_abb();
+//        arvore_abb();
+
+        String nome1 = null;
+        String nome2 = null;
+        
+        Scanner input = new Scanner(System.in);
+        nome1 = input.next();
+        nome2 = input.next();
+        
+        System.out.println(nome1 + " tamanho: " + nome1.length());
+        System.out.println(nome2 + " tamanho: " + nome2.length());
+        
+        int compareTo = nome1.compareTo(nome2);
+        System.out.println(compareTo);
+//        System.out.println(nome1.compareTo(nome2) ? nome1+" é maior que " + nome2 : nome2+" é maior que "+nome1);
     }
 }
