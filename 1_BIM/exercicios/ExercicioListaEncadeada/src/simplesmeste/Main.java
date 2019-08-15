@@ -1,4 +1,4 @@
-package main;
+package simplesmeste;
 
 import java.util.Scanner;
 

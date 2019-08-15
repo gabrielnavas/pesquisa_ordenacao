@@ -1,4 +1,4 @@
-package main;
+package simplesmeste;
 
 class NoEstado {
     private String nome;

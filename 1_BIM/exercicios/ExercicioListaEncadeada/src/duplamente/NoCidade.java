@@ -1,14 +1,17 @@
-package main;
+package duplamente;
 
-class NoCidade {
+public class NoCidade {
+ 
     private String nome;
     private NoCidade prox;
+    private NoCidade ant;
     
     public NoCidade(){}
     
-    public NoCidade(String nome, NoCidade prox)
+    public NoCidade(String nome, NoCidade ant, NoCidade prox)
     {
         this.nome=nome;
+        this.ant=ant;
         this.prox=prox;
     }
 
@@ -27,6 +30,12 @@ class NoCidade {
     public void setProx(NoCidade prox) {
         this.prox = prox;
     }
-    
-    
+
+    public NoCidade getAnt() {
+        return ant;
+    }
+
+    public void setAnt(NoCidade ant) {
+        this.ant = ant;
+    }
 }
