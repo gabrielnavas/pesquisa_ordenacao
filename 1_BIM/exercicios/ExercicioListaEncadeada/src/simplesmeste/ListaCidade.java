@@ -1,83 +1,76 @@
 package simplesmeste;
 
-class ListaCidade {
+public class ListaCidade {
     
-    private NoCidade cidades;
+    private NoCidade inicio;
     
     public ListaCidade()
     {
-        cidades=null;
+        this.inicio=null;
     }
     
-    public void init()
+    public void iniciar()
     {
-        cidades=null;
+        this.inicio=null;
     }
     
-    public NoCidade buscar(String nomeCid)
+    public NoCidade buscarCidade(String cidade)
     {
-        NoCidade aux = cidades;
+        NoCidade aux = inicio;
         
-        while(aux != null && !aux.getNome().equals(nomeCid))
+        while(aux != null && !aux.getNome().equals(cidade))
             aux=aux.getProx();
     
-        if(aux != null && aux.getNome().equals(nomeCid))
+        if(aux != null && aux.getNome().equals(cidade))
             return aux;
         return null;
     }
     
-    public void inserirOrdenado(String nomeCid)
+    public void inserirOrdenado(String cidade)
     {
-        NoCidade noCidade = buscar(nomeCid);
-        NoCidade ant, atual, novo;
+        NoCidade ant=null, atual=null, novo=null;
         
-        if(noCidade == null)
+        novo = new NoCidade(cidade, null);
+        
+        if(inicio == null)
+            inicio = novo;
+        else
         {
-            novo = new NoCidade(nomeCid, null);
-            ant = null;
-            atual = cidades; //5   1 4 6 7
+            NoCidade noBusca = buscarCidade(cidade);
             
-            while(atual != null && nomeCid.compareTo(atual.getNome()) > 0)
+            if(noBusca == null)
             {
-                ant = atual;
-                atual = atual.getProx();
-            }
-            
-            if(ant == null)
-            {
-                novo.setProx(cidades);
-                cidades = novo;
-            }
-            else 
-            {
-                novo.setProx(atual);
-                ant.setProx(novo);
-            }
-        }
-    }
-    
-    public void inserirOrdenado(ListaCidade listaCid)
-    {
-        NoCidade noCid = listaCid.getCidades();
-        while(noCid != null)
-        {
-            inserirOrdenado(noCid.getNome());
-            noCid = noCid.getProx();
-        }
-    }
+                ant = null;
+                atual = inicio;
+                
+                while(atual != null && cidade.compareTo(atual.getNome()) > 0)
+                {
+                    ant = atual;
+                    atual = atual.getProx();
+                }
 
-    public NoCidade getCidades() {
-        return cidades;
+                if(ant == null)
+                {
+                    novo.setProx(inicio);
+                    inicio = novo;
+                }
+                else 
+                {
+                    novo.setProx(atual);
+                    ant.setProx(novo);
+                }
+            }
+        }
     }
 
     public void exibirRelatorioGeral() {
-        NoCidade noCidade = cidades;
+        NoCidade noCidade = null;
+        
+        noCidade = inicio;
         while(noCidade != null)
         {
             System.out.println(noCidade.getNome());
             noCidade = noCidade.getProx();
         }
     }
-    
-    
 }

@@ -1,6 +1,6 @@
 package simplesmeste;
 
-class NoCidade {
+public class NoCidade {
     private String nome;
     private NoCidade prox;
     
@@ -26,7 +26,5 @@ class NoCidade {
 
     public void setProx(NoCidade prox) {
         this.prox = prox;
-    }
-    
-    
+    }   
 }

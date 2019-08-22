@@ -3,18 +3,57 @@ package simplesmeste;
 public class ListaEstado {
     
     private NoEstado inicio;
+//    private int tl; 
     
-    ListaEstado()
+    public ListaEstado()
     {
         this.inicio = null;
     }
     
-    public void init()
+    public void iniciar()
     {
         this.inicio = null;
     }
     
-    public NoEstado buscar(String nomeEst)
+    public void inserirOrdenado(String estado, String cidade)
+    {
+        NoEstado ant=null, atual=null, novo=null;
+        NoEstado noEstado = buscarEstado(estado);
+        
+        if(noEstado != null)
+            noEstado.getListaCidades().inserirOrdenado(cidade);
+        else
+        {
+            novo = new NoEstado(estado, cidade, null);
+            
+            if(inicio == null)
+                inicio = novo;
+            else
+            {
+                ant = null;
+                atual = inicio;
+
+                while(atual != null && atual.getNome().compareTo(estado) < 0)
+                {
+                    ant = atual;
+                    atual = atual.getProx();
+                }
+
+                if(ant == null)
+                {
+                    novo.setProx(inicio);
+                    inicio = novo;
+                }
+                else
+                {
+                    novo.setProx(atual);
+                    ant.setProx(novo);
+                }
+            }
+        }
+    }
+    
+    public NoEstado buscarEstado(String nomeEst)
     {
         NoEstado aux = inicio;
         while(aux != null && !aux.getNome().equals(nomeEst))
@@ -25,51 +64,62 @@ public class ListaEstado {
         return null;
     }
     
-    public void inserirInicio(String nomeEst, ListaCidade listaCid)
+    public NoCidade buscarCidade(String cidade)
     {
-        NoEstado novo = new NoEstado(nomeEst, listaCid, inicio);
+        NoEstado noEst = null;
+        NoCidade noCid = null;
         
-        if(inicio == null)
-            inicio = novo;
-        else
+        noEst = inicio;
+        while(noEst != null && noCid != null)
         {
-            NoEstado busca = buscar(nomeEst);
-            
-            if(busca != null)
-                busca.getListaCidades().inserirOrdenado(listaCid);
-            else
-                inicio = novo;
+            noCid = noEst.getListaCidades().buscarCidade(cidade);
+            noEst = noEst.getProx();
+        }
+        
+        return noCid;
+    }
+    
+    public boolean verificarEstadoCidade(String estado, String cidade)
+    {
+        NoEstado noEst = buscarEstado(estado);
+        NoCidade noCid = null;
+        
+        if(noEst != null)
+            noCid = noEst.getListaCidades().buscarCidade(cidade);
+        
+        return noCid != null;
+    }
+    
+    
+    public void removerEstado(String estado)
+    {
+        NoEstado ant, atual;
+        
+        ant = null;
+        atual = inicio;
+        
+        while(atual != null && !atual.getNome().equals(estado))
+        {
+            ant = atual;
+            atual = atual.getProx();
+        }
+       
+        if(atual != null)
+        {
+            if(ant == null)
+                inicio = inicio.getProx();
+            else 
+                ant.setProx(atual.getProx());
         }
     }
     
-    public void inserirFinal(String nomeEst, ListaCidade listaCid)
-    {
-        NoEstado novo = new NoEstado(nomeEst, listaCid, null);
-
-        if(inicio == null)
-            inicio = novo;
-        else
-        {
-            NoEstado noEstado = buscar(nomeEst);
-
-            if(noEstado != null)
-                noEstado.getListaCidades().inserirOrdenado(listaCid);
-            else
-            {
-                while(noEstado.getProx() != null)
-                    noEstado = noEstado.getProx();
-
-                noEstado.setProx(novo);
-            }
-        }
-    }
     
     public void exibirRelatorioGeral()
     {
         NoEstado estado = inicio;
         while(estado != null)
         {
-            System.out.println(estado.getNome() + ": ");
+            System.out.println("Estado: " + estado.getNome() + " Cidades => ");
             estado.getListaCidades().exibirRelatorioGeral();
             
             estado = estado.getProx();
@@ -78,66 +128,12 @@ public class ListaEstado {
     
     public void exibirRelatorioEstado(String nomeEst)
     {
-        NoEstado noEst = buscar(nomeEst);
+        NoEstado noEst = buscarEstado(nomeEst);
         
         if(noEst != null)
         {
             System.out.println("Estado: " + nomeEst);
             noEst.getListaCidades().exibirRelatorioGeral();
-        }
-    }
-    
-    public void remover(String nomeEst)
-    {
-        NoEstado ant, atual, del;
-        
-        ant = null;
-        atual = inicio;
-        while(inicio != null && nomeEst.compareTo(atual.getNome()) != 0)
-        {
-            ant = atual;
-            atual = atual.getProx();
-        }
-       
-        if(ant == null)
-            inicio = inicio.getProx();
-        else if(atual != null)
-            ant.setProx(atual.getProx());
-        else
-            ant.setProx(atual.getProx());
-            
-    }
-    
-    public void inserirOrdenado(String nomeEst, ListaCidade listaCid)
-    {
-        NoEstado ant, atual, novo;
-        NoEstado noEstado = buscar(nomeEst);
-        
-        if(noEstado != null)
-            noEstado.getListaCidades().inserirOrdenado(listaCid);
-        else
-        {
-            novo = new NoEstado(nomeEst, listaCid, null);
-            
-            ant = null;
-            atual = inicio;
-
-            while(atual != null && atual.getNome().compareTo(nomeEst) < 0)
-            {
-                ant = atual;
-                atual = atual.getProx();
-            }
-            
-            if(ant == null)
-            {
-                novo.setProx(inicio);
-                inicio = novo;
-            }
-            else
-            {
-                novo.setProx(atual);
-                ant.setProx(novo);
-            }
         }
     }
 }

@@ -1,16 +1,20 @@
 package simplesmeste;
 
-class NoEstado {
+public class NoEstado 
+{
     private String nome;
     private NoEstado prox;
     private ListaCidade listaCidades;
     
-    NoEstado(String nome, ListaCidade cidades, NoEstado prox)
+    public NoEstado() {}
+    
+    public NoEstado(String estado, String cidade, NoEstado prox)
     {
-        this.nome = nome;
-        this.listaCidades = cidades;
+        this.nome = estado;
         this.prox = prox;
-        this.listaCidades.inserirOrdenado(cidades);
+        
+        this.listaCidades = new ListaCidade();
+        this.listaCidades.inserirOrdenado(cidade);
     }
 
     public String getNome() {
