@@ -8,6 +8,12 @@ class No {
     private No prox;
     private No ant;
     
+    public No(int info, No prox)
+    {
+        this.prox = prox;
+        this.info = info;
+    }
+
     public No(int info, No ant, No prox)
     {
         this.ant = ant;
@@ -41,16 +47,16 @@ class No {
 }
 
 // ======================================================== LISTA DUPLAMENTE ENCADEADA
-class ListaDupla {
-    
+class ListaDupla 
+{    
     private No inicio;
     private No fim;
     int tl;
     
     public ListaDupla()
     {
-        this.inicio = inicio;
-        this.fim = fim;
+        this.inicio = null;
+        this.fim = null;
         this.tl=0;
     }
     
@@ -110,32 +116,149 @@ class ListaDupla {
     
     public void insercaoDireta()
     {
+        No pI, pPos;
+        int aux;
         
+        pI = inicio.getProx();
+        while(pI != null)
+        {
+            aux = pI.getInfo();
+            pPos = pI;
+            while(pPos != inicio && pPos.getAnt().getInfo() > aux)
+            {
+                pPos.setInfo(pPos.getAnt().getInfo());
+                pPos = pPos.getAnt();
+            }
+            pPos.setInfo(aux);
+            
+            pI = pI.getProx();
+        }
+    }
+    
+    
+    public int buscaBinariaIB(int chave, No fim)
+    {
+        return 0;
     }
     
     public void insercaoBinaria()
     {
-        
+        //faço depois
     }
     
-    public void selecaoDireta()
-    {
-        
-    }
     
     public void bolha()
     {
+        int tl, aux;
+        No pI;
         
+        tl=getTl();
+        while(tl > 1)
+        {
+            pI = inicio;
+            while(pI != fim)
+            {
+                if(pI.getInfo() > pI.getProx().getInfo())
+                {
+                   aux = pI.getInfo();
+                   pI.setInfo(pI.getProx().getInfo());
+                   pI.getProx().setInfo(aux);
+                }
+                
+                pI = pI.getProx();
+            }
+            
+            tl--;
+        }
     }
     
     public void shake()
     {
+        No noIni, noFim, noI;
+        int aux;
         
+        noIni = inicio;
+        noFim = fim;
+        
+        while(noIni != noFim)
+        {
+            noI = noIni;
+            while(noI != noFim)
+            {
+                if(noI.getInfo() > noI.getProx().getInfo())
+                {
+                    aux = noI.getInfo();
+                    noI.setInfo(noI.getProx().getInfo());
+                    noI.getProx().setInfo(aux);
+                }
+                
+                noI = noI.getProx();
+            }
+            
+            noI = fim;
+            while(noI != noIni)
+            {
+                if(noI.getInfo() < noI.getAnt().getInfo())
+                {
+                    aux = noI.getInfo();
+                    noI.setInfo(noI.getAnt().getInfo());
+                    noI.getAnt().setInfo(aux);
+                }
+                
+                noI = noI.getAnt();
+            }
+            
+            if(noIni != noFim)
+                noIni = noIni.getProx();
+        }
     }
     
     public void heap()
     {
+        int pai, fd, fe, aux, tl;
+        No noPai, noFd, noFe, noMaiorf, noTL;
         
+        noTL = fim;
+        tl = getTl();
+        while(tl > 1)
+        {
+            pai = tl/2 - 1;
+            while(pai >= 0)
+            {
+                fe = pai+pai+1;
+                fd = fe+1;
+                
+                noPai = getNo(inicio, pai);
+                noFe = getNo(inicio, fe);
+                noFd = noFe.getProx();
+                
+                if(fd < tl)
+                {
+                    if(noFe.getInfo() > noFd.getInfo())
+                        noMaiorf = noFe;
+                    else
+                        noMaiorf = noFd;
+                }
+                else
+                    noMaiorf = noFe;
+                
+                if(noMaiorf.getInfo() > noPai.getInfo())
+                {
+                    aux = noMaiorf.getInfo();
+                    noMaiorf.setInfo(noPai.getInfo());
+                    noPai.setInfo(aux);
+                }
+                
+                pai--;
+            }
+            
+            aux = inicio.getInfo();
+            inicio.setInfo(noTL.getInfo());
+            noTL.setInfo(aux);
+            
+            noTL = noTL.getAnt();
+            tl--;
+        }
     }
     
     public void shell()
@@ -178,10 +301,10 @@ class ListaDupla {
                     noJ = getNo(noJ, dist);
                 }
                 
-                noI = getNo(noI, 1);
+                noI = noI.getProx();
             }
             
-            dist = dist/4;
+            dist = dist/2;
         }
     }
 
@@ -255,15 +378,90 @@ class ListaDupla {
 // ======================================================== LISTA SIMPLESMENTE ENCADEADA
 class ListaSimples
 {
+    private No inicio;
+    int tl;    
     
+    public ListaSimples()
+    {
+        this.inicio = null;
+        this.tl=0;
+    }
+    
+    public void inicia()
+    {
+        this.inicio=null;
+        this.tl=0;
+    }
+    
+    public void inserirFinal(int num)
+    {
+        No novo = new No(num, null);
+        
+        if(inicio == null)
+            inicio=novo;
+        else
+        {
+            No aux = inicio;
+            while(aux.getProx() != null)
+                aux = aux.getProx();
+            
+            aux.setProx(novo);
+        }
+        
+        tl++;
+    }
+    
+    public void exibir()
+    {
+        No aux = inicio;
+        while(aux != null)
+        {
+            System.out.print("["+aux.getInfo()+"] ");
+            aux=aux.getProx();
+        }
+        System.out.println();
+    }
+    
+    
+    public void selecaoDireta()
+    {
+        No pPosMenor, pI, pJ;
+        int menor;
+        
+        pI = inicio;
+        while(pI.getProx() != null)
+        {
+            pPosMenor = pI;
+            menor = pI.getInfo();
+            
+            pJ = pI.getProx();
+            while(pJ != null)
+            {
+                if(pJ.getInfo() < menor)
+                {
+                    pPosMenor = pJ;
+                    menor = pJ.getInfo();
+                }
+                
+                pJ = pJ.getProx();
+            }
+            
+            pPosMenor.setInfo(pI.getInfo());
+            pI.setInfo(menor);
+            
+            pI = pI.getProx();
+        }
+    }
 }
 
 public class ListaAlgoritmos {
     
     static ListaDupla listaInsercaoDireta = new ListaDupla();
     static ListaDupla listaInsercaoBinaria = new ListaDupla();
-    static ListaDupla listaSelecaoDireta = new ListaDupla();
+    static ListaSimples listaSelecaoDireta = new ListaSimples();
     static ListaDupla listaShell = new ListaDupla();
+    static ListaDupla listaBolha = new ListaDupla();
+    static ListaDupla listaShake = new ListaDupla();
     static ListaDupla listaHeap = new ListaDupla();
     static ListaDupla listaQuickSP = new ListaDupla();
     static ListaDupla listaQuickCP = new ListaDupla();
@@ -282,11 +480,13 @@ public class ListaAlgoritmos {
         
         for(int i=0 ; i < dados.length ; i++)
         {
-//            listaInsercaoDireta.inserirFinal(i);
-//            listaInsercaoBinaria.inserirFinal(i);
-//            listaSelecaoDireta.inserirFinal(i);
-//            listaShell.inserirFinal(i);
-//            listaHeap.inserirFinal(i);
+            listaInsercaoDireta.inserirFinal(i);
+//            listaInsercaoBinaria.inserirFinal(i); //faço depois
+            listaSelecaoDireta.inserirFinal(i);
+            listaShell.inserirFinal(i);
+            listaHeap.inserirFinal(i);
+            listaBolha.inserirFinal(i);
+            listaShake.inserirFinal(i);
 //            listaQuickSP.inserirFinal(i);
 //            listaQuickCP.inserirFinal(i);
 //            listaQuickSort.inserirFinal(i);
@@ -307,6 +507,8 @@ public class ListaAlgoritmos {
         listaSelecaoDireta.selecaoDireta();
         listaShell.shell();
         listaHeap.heap();
+        listaBolha.bolha();
+        listaShake.shake();
         listaQuickSP.quickSP();
         listaQuickCP.quickCP();
         listaQuickSort.quickSort();
@@ -336,6 +538,12 @@ public class ListaAlgoritmos {
         System.out.print("Heap:              ");        
         listaHeap.exibir();
 
+        System.out.print("Bolha:             ");        
+        listaBolha.exibir();
+
+        System.out.print("Shake:             ");        
+        listaShake.exibir();
+        
         System.out.print("QuickSP:           ");        
         listaQuickSP.exibir();
 
