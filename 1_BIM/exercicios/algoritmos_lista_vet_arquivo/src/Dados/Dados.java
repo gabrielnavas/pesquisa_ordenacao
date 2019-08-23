@@ -12,6 +12,6 @@ public class Dados {
         for(int i=0, j=TL_GERAL ; i < TL_GERAL ; i++, j--)
             dados[i] = j;
         
-        return new int[]{};
+        return dados;
     }
 }

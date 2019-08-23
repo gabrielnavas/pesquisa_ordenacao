@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//... classe Entrada (possui m�todos para entrada de dados) ....
 class Entrada
 {
     public static String leString(String msg)
@@ -41,7 +40,6 @@ class Entrada
     }
 }
 
-//... classe Registro (ser� um objeto que simboliza o registro em pascal) ....
 class Registro
 {
     public final int tf = 20;//variavel do tipo "final" � constante
@@ -131,13 +129,12 @@ class Registro
 }
 
 
-//... classe Arquivo (onde vai estar o método para ordernar, etc) ....
-public class Arquivo_Java
+class Arquivo
 {
     private String nomearquivo;
     private RandomAccessFile arquivo;
 
-    public Arquivo_Java(String nomearquivo)
+    public Arquivo(String nomearquivo)
     {
         try
         {
@@ -155,8 +152,6 @@ public class Arquivo_Java
         { }
     }
 
-    //semelhante ao feof() da linguagem C
-    //verifica se o ponteiro esta no <EOF> do arquivo
     public boolean eof()  
     {
         boolean retorno = false;
@@ -169,7 +164,6 @@ public class Arquivo_Java
         return (retorno);
     }
 
-    //insere um Registro no final do arquivo, passado por par�metro
     public void inserirRegNoFinal(Registro reg)
     {
         seekArq(fileSize());//ultimo byte
@@ -189,6 +183,8 @@ public class Arquivo_Java
             reg.exibirReg();
             i++;
         }
+        
+        System.out.println();
     }
 
     public void exibirUmRegistro(int pos)
@@ -284,6 +280,11 @@ public class Arquivo_Java
             
             i++;
         }
+    }
+    
+    public void insercaoBinaria()
+    {
+        
     }
     
     public void selecaoDireta()
@@ -404,29 +405,6 @@ public class Arquivo_Java
             if(inicio2<fim2)
                 inicio2++;
         }
-    }
-        
-    private Registro getReg(int pos)
-    {
-        Registro reg = new Registro();
-        int posAtual=0;
-        try {
-            posAtual = (int) ( arquivo.getFilePointer() * Registro.length() );
-        } 
-        catch (IOException ex) {}
-        
-        if(pos == 0)
-        {
-            seekArq(posAtual - 1);
-            reg.leDoArq(arquivo);
-            
-        }
-        else 
-        {
-            seekArq( (pos < 0) ? posAtual - pos : posAtual + pos);
-            reg.leDoArq(arquivo);
-        }    
-        return reg;
     }
     
     public void shell()
@@ -566,7 +544,7 @@ public class Arquivo_Java
                 while(i < j && regI.getCodigo() <= regJ.getCodigo())
                 {
                     i++;
-                    seekArq(i);
+                    seekArq(i); //da pra ler isso la em baixo
                     regI.leDoArq(arquivo);
                 }
             else
@@ -589,48 +567,245 @@ public class Arquivo_Java
             quickSort(j+1, fim);
     }
     
-    public void executa()
+    
+    public void heap()
     {
-        Registro[] registros = new Registro[10];
-        
-        registros[0] = new Registro(15, "Gabriel", 26);
-        registros[1] = new Registro(13, "João", 43);
-        registros[2] = new Registro(10, "Julia", 25);
-        registros[3] = new Registro(8, "Maria", 76);
-        registros[4] = new Registro(6, "Douglas", 87);
-        registros[5] = new Registro(5, "Ricardo", 44);
-        registros[6] = new Registro(4, "José", 77);
-        registros[7] = new Registro(3, "Josélito", 77);
-        registros[8] = new Registro(2, "Ana", 66);
-        registros[9] = new Registro(1, "Josélia", 55);
-        
-        for(int i=0 ; i < 10 ; i++)
-            this.inserirRegNoFinal(registros[i]);
-        
-        System.out.println("\n\nSEM ORDENAR ===================================== \n");
-        exibirArq();
-        
-
-//        insercaoDireta();
-//        selecaoDireta();
-//        shake();
-//        bolha();
-//        shell();
-//        quickSP();
-        quickSort();
-        
-        System.out.println("\n\nORDENADO ======================================= \n");
-        exibirArq();
         
     }
+    
+    public void quickCP()
+    {
+        
+    }
+    
+    public void merge1()
+    {
+        
+    }
+    
+    public void merge2()
+    {
+        
+    }
+    
+    public void comb()
+    {
+        
+    }
+    
+    public void gnome()
+    {
+        
+    }
+    
+    public void bucket()
+    {
+        
+    }
+    
+    public void radix()
+    {
+        
+    }
+    
+    public void tim()
+    {
+        
+    }
+    
+    
+    private Registro getReg(int pos)
+    {
+        Registro reg = new Registro();
+        int posAtual=0;
+        try {
+            posAtual = (int) ( arquivo.getFilePointer() * Registro.length() );
+        } 
+        catch (IOException ex) {}
+        
+        if(pos == 0)
+        {
+            seekArq(posAtual - 1);
+            reg.leDoArq(arquivo);
+            
+        }
+        else 
+        {
+            seekArq( (pos < 0) ? posAtual - pos : posAtual + pos);
+            reg.leDoArq(arquivo);
+        }    
+        return reg;
+    }
+    
+//    public void executa()
+//    {
+//        Registro[] registros = new Registro[10];
+//        
+//        registros[0] = new Registro(15, "Gabriel", 26);
+//        registros[1] = new Registro(13, "João", 43);
+//        registros[2] = new Registro(10, "Julia", 25);
+//        registros[3] = new Registro(8, "Maria", 76);
+//        registros[4] = new Registro(6, "Douglas", 87);
+//        registros[5] = new Registro(5, "Ricardo", 44);
+//        registros[6] = new Registro(4, "José", 77);
+//        registros[7] = new Registro(3, "Josélito", 77);
+//        registros[8] = new Registro(2, "Ana", 66);
+//        registros[9] = new Registro(1, "Josélia", 55);
+//        
+//        for(int i=0 ; i < 10 ; i++)
+//            this.inserirRegNoFinal(registros[i]);
+//        
+//        System.out.println("\n\nSEM ORDENAR ===================================== \n");
+//        exibirArq();
+//        
+//
+////        insercaoDireta();
+////        selecaoDireta();
+////        shake();
+////        bolha();
+////        shell();
+////        quickSP();
+//        quickSort();
+//        
+//        System.out.println("\n\nORDENADO ======================================= \n");
+//        exibirArq();
+//        
+    }
 
-    //m�todo principal
+public class ArquivoAlgoritmos
+{
+    static Arquivo arquivoInsercaoDireta = new Arquivo("arquivoInsercaoDireta.dat");
+    static Arquivo arquivoInsercaoBinaria = new Arquivo("arquivoInsercaoBinaria.dat");
+    static Arquivo arquivoSelecaoDireta = new Arquivo("arquivoSelecaoDireta.dat");
+    static Arquivo arquivoShell = new Arquivo("arquivoShell.dat");
+    static Arquivo arquivoHeap = new Arquivo("arquivoHeap.dat");
+    static Arquivo arquivoQuickSP = new Arquivo("arquivoQuickSP.dat");
+    static Arquivo arquivoQuickCP = new Arquivo("arquivoQuickCP.dat");
+    static Arquivo arquivoQuickSort = new Arquivo("arquivoQuickSort.dat");
+    static Arquivo arquivoMerge1 = new Arquivo("arquivoMerge1.dat");
+    static Arquivo arquivoMerge2 = new Arquivo("arquivoMerge2.dat");
+    static Arquivo arquivoComb = new Arquivo("arquivoComb.dat");
+    static Arquivo arquivoGnome = new Arquivo("arquivoGnome.dat");
+    static Arquivo arquivoBucket = new Arquivo("arquivoBucket.dat");
+    static Arquivo arquivoRadix = new Arquivo("arquivoRadix.dat");
+    static Arquivo arquivoTim = new Arquivo("arquivoTim.dat");
+        
+    public static void deletarExistentes()
+    {
+        new File("arquivoInsercaoDireta.dat").delete();
+        new File("arquivoInsercaoBinaria.dat").delete();
+        new File("arquivoSelecaoDireta.dat").delete();
+        new File("arquivoShell.dat").delete();
+        new File("arquivoHeap.dat").delete();
+        new File("arquivoQuickSP.dat").delete();
+        new File("arquivoQuickCP.dat").delete();
+        new File("arquivoQuickSort.dat").delete();
+        new File("arquivoMerge1.dat").delete();
+        new File("arquivoMerge2.dat").delete();
+        new File("arquivoComb.dat").delete();
+        new File("arquivoGnome.dat").delete();
+        new File("arquivoBucket.dat").delete();
+        new File("arquivoRadix.dat").delete();
+        new File("arquivoTim.dat").delete();
+    }
+    
+    public static void inserirDadosListas()
+    {
+        int[] dados = Dados.Dados.getDadosInt();
+        
+        for(int i=0 ; i < dados.length ; i++)
+        {
+//            arquivoInsercaoDireta.inserirFinal(i);
+//            arquivoInsercaoBinaria.inserirFinal(i);
+//            arquivoSelecaoDireta.inserirFinal(i);
+//            arquivoShell.inserirFinal(i);
+//            arquivoHeap.inserirFinal(i);
+//            arquivoQuickSP.inserirFinal(i);
+//            arquivoQuickCP.inserirFinal(i);
+//            arquivoQuickSort.inserirFinal(i);
+//            arquivoMerge1.inserirFinal(i);
+//            arquivoMerge2.inserirFinal(i);
+//            arquivoComb.inserirFinal(i);
+//            arquivoGnome.inserirFinal(i);
+//            arquivoBucket.inserirFinal(i);
+//            arquivoRadix.inserirFinal(i);
+//            arquivoTim.inserirFinal(i);
+        }
+    }
+    
+    public static void ordenarListas()
+    {
+        arquivoInsercaoDireta.insercaoDireta();
+        arquivoInsercaoBinaria.insercaoBinaria();
+        arquivoSelecaoDireta.selecaoDireta();
+        arquivoShell.shell();
+        arquivoHeap.heap();
+        arquivoQuickSP.quickSP();
+        arquivoQuickCP.quickCP();
+        arquivoQuickSort.quickSort();
+        arquivoMerge1.merge1();
+        arquivoMerge2.merge2();
+        arquivoComb.comb();
+        arquivoGnome.gnome();
+        arquivoBucket.bucket();
+        arquivoRadix.radix();
+        arquivoTim.tim();
+    }
+    
+    public static void exibirDadosListas()
+    {
+        System.out.print("Insercao Direta:   ");
+        arquivoInsercaoDireta.exibirArq();
+
+        System.out.print("Insercao Binaria:  ");
+        arquivoInsercaoBinaria.exibirArq();
+
+        System.out.print("Selecao Direta:    ");
+        arquivoSelecaoDireta.exibirArq();
+        
+        System.out.print("Shell:             ");
+        arquivoShell.exibirArq();
+
+        System.out.print("Heap:              ");        
+        arquivoHeap.exibirArq();
+
+        System.out.print("QuickSP:           ");        
+        arquivoQuickSP.exibirArq();
+
+        System.out.print("QuickCP:           ");
+        arquivoQuickCP.exibirArq();
+
+        System.out.print("QuickSort:         ");
+        arquivoQuickSort.exibirArq();
+
+        System.out.print("Merge1:            ");
+        arquivoMerge1.exibirArq();
+
+        System.out.print("Merge2:            ");
+        arquivoMerge2.exibirArq();
+
+        System.out.print("Comb:              ");
+        arquivoComb.exibirArq();
+
+        System.out.print("Gnome:             ");
+        arquivoGnome.exibirArq();
+
+        System.out.print("Bucket:            ");
+        arquivoBucket.exibirArq();
+
+        System.out.print("Radix:             ");
+        arquivoRadix.exibirArq();
+
+        System.out.print("Tim:               ");
+        arquivoTim.exibirArq();
+    }
+    
     public static void main(String args[])
     {
-        new File("arquivo.dat").delete();
-        
-        Arquivo_Java a = new Arquivo_Java("arquivo.dat");
-        a.executa();
+        deletarExistentes();
+        inserirDadosListas();
+        ordenarListas();
+        exibirDadosListas();
     }
 
 }
