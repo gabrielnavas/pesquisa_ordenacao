@@ -85,13 +85,10 @@ class ListaDupla
     
     public No getNo(No no, int pos)
     {
-        No aux = null;
+        No aux = no;
         
-        if(pos == 0)
-            aux = no;
-        else if (pos < 0)
+        if (pos < 0)
         {
-            aux = no;
             while(aux != null && pos < 0)
             {
                 aux = aux.getAnt();
@@ -100,7 +97,6 @@ class ListaDupla
         }
         else
         {
-            aux = no;
             while(aux != null && pos > 0)
             {
                 aux = aux.getProx();
@@ -110,34 +106,48 @@ class ListaDupla
         
         return aux;
     }
+    public No getNo(int pos)
+    {
+        No aux = inicio;
+        
+        while(pos >= 0)
+        {
+            aux = aux.getProx();
+            pos--;
+        }
+
+        return aux;
+    }
     
     
     // ================= Algoritmos
     
     public void insercaoDireta()
     {
-        No pI, pPos;
+        No noI, noPos;
         int aux;
         
-        pI = inicio.getProx();
-        while(pI != null)
+        noI = inicio.getProx();
+        while(noI != null)
         {
-            aux = pI.getInfo();
-            pPos = pI;
-            while(pPos != inicio && pPos.getAnt().getInfo() > aux)
-            {
-                pPos.setInfo(pPos.getAnt().getInfo());
-                pPos = pPos.getAnt();
-            }
-            pPos.setInfo(aux);
+            aux = noI.getInfo();
+            noPos = noI;
             
-            pI = pI.getProx();
+            while(noPos != inicio && noPos.getAnt().getInfo() > aux)
+            {
+                noPos.setInfo(noPos.getAnt().getInfo());
+                noPos = noPos.getAnt();
+            }
+            noPos.setInfo(aux);
+            
+            noI = noI.getProx();
         }
     }
     
     
     public int buscaBinariaIB(int chave, No fim)
     {
+        //faço depois
         return 0;
     }
     
@@ -272,7 +282,7 @@ class ListaDupla
         tl=getTl();
         
         while(dist > 0)
-        {
+        {         
             noI=inicio;
             for(int i = 0 ; i < dist ; i++)
             {
@@ -285,17 +295,18 @@ class ListaDupla
                         aux = noJ.getInfo();
                         noJ.setInfo(noDist.getInfo());
                         noDist.setInfo(aux);
-                    }
                     
-                    noDist = getNo(noJ, -dist);
-                    noK = noJ;
-                    for(int k=j ; k-dist >= i && noK.getInfo() < noDist.getInfo() ; k-=dist)
-                    {
-                        aux = noK.getInfo();
-                        noK.setInfo(noDist.getInfo());
-                        noDist.setInfo(aux);
-                        
-                        noK = getNo(noK, -dist);
+
+                        noDist = getNo(noJ, -dist);
+                        noK = noJ;
+                        for(int k=j ; k-dist >= 0 && noK.getInfo() < noDist.getInfo() ; k-=dist)
+                        {   
+                            aux = noK.getInfo();
+                            noK.setInfo(noDist.getInfo());
+                            noDist.setInfo(aux);
+
+                            noK = getNo(noK, -dist);
+                        }
                     }
                     
                     noJ = getNo(noJ, dist);
@@ -308,24 +319,234 @@ class ListaDupla
         }
     }
 
+    
     public void quickSP()
     {
+        quickSP(0, getTl()-1, inicio, fim);
+    }
+    
+    public void quickSP(int ini, int fim, No noIni, No noFim)
+    {
+        int aux, i, j;
+        No noI, noJ;
         
+        i=ini;
+        j=fim;
+        noI = noIni;
+        noJ = noFim;
+        
+        while(i < j)
+        {
+            while(i < j && noI.getInfo() <= noJ.getInfo())
+            {
+                i++;
+                noI = noI.getProx();
+            }
+            
+            aux = noI.getInfo();
+            noI.setInfo(noJ.getInfo());
+            noJ.setInfo(aux);
+            
+            while(i < j && noJ.getInfo() >= noI.getInfo())
+            {
+                j--;
+                noJ = noJ.getAnt();
+            }
+            
+            aux = noJ.getInfo();
+            noI.setInfo(noJ.getInfo());
+            noJ.setInfo(aux);
+        }
+        
+        if(ini < i-1)
+            quickSP(ini, i-1, noIni, noI.getAnt());
+        if(j+1 < fim)
+            quickSP(j+1, fim, noJ.getProx(), noFim);
     }
     
     public void quickSort()
     {
+        quickSort(0, getTl()-1, inicio, fim);
+    }
+    
+    public void quickSort(int ini, int fim, No noIni, No noFim)
+    {
+        boolean flag = true;
+        int aux, i, j;
+        No noI, noJ;
         
+        i = ini;
+        j = fim;
+        noI = noIni;
+        noJ = noFim;
+        
+        while(i < j)
+        {
+            if(flag)
+                while(i < j && noI.getInfo() <= noJ.getInfo())
+                {
+                    i++;
+                    noI = noI.getProx();
+                }
+            else
+                while(i < j && noJ.getInfo() >= noI.getInfo())
+                {
+                    j--;
+                    noJ = noJ.getAnt();
+                }
+            
+            aux = noI.getInfo();
+            noI.setInfo(noJ.getInfo());
+            noJ.setInfo(aux);
+            flag = !flag;
+        }
+        
+        if(ini < i-1)
+            quickSort(ini, i-1, noIni, noI.getAnt());
+        if(j+1 < fim)
+            quickSort(j+1, fim, noJ.getProx(), noFim);
     }
     
     public void quickCP()
     {
+        quickCP(0, getTl()-1, inicio, fim);
+    }
+    
+    public void quickCP(int ini, int fim, No noIni, No noFim)
+    {        
+        int aux, i, j, pivo;
+        No noI, noJ, noPivo;
         
+        i=ini;
+        j=fim;
+        pivo = (ini+fim)/2;
+        noI=noIni;
+        noJ=noFim;
+        noPivo = getNo(inicio, pivo);
+        
+        while(i < j)
+        {
+            while(noI.getInfo() < noPivo.getInfo())
+            {
+                i++;
+                noI=noI.getProx();
+            }
+            while(noJ.getInfo() > noPivo.getInfo())
+            {
+                j--;
+                noJ=noJ.getAnt();
+            }
+            
+            if(i <= j)
+            {
+                aux = noI.getInfo();
+                noI.setInfo(noJ.getInfo());
+                noJ.setInfo(aux);
+                
+                i++;
+                j--;
+            }
+        }
+        
+        if(ini < j)
+            quickCP(ini, j, noIni, noJ);
+        if(i < fim)
+            quickCP(i, fim, noI, noFim);
     }
     
     public void merge1()
     {
+        ListaDupla[] lts;
+        int seq = 1;
         
+        while(seq < getTl())
+        {
+//            l1 = particao(inicio, tl/2);
+//            l2 = particao(l1.getFim(), tl/2);
+            lts = particao();
+            fusao(lts[0], lts[1], seq);
+            
+            seq = seq * 2;
+        }
+    }
+    
+    public ListaDupla[] particao()
+    {
+        ListaDupla[]lts = new ListaDupla[2];
+        lts[0] = new ListaDupla();
+        lts[1] = new ListaDupla();
+        
+        int i=0;
+        No no = inicio;
+        while(no != null && i < getTl()/2)
+        {
+            lts[0].inserirFinal(no.getInfo());
+            no = no.getProx();
+            i++;
+        }
+        
+        while(no != null)
+        {
+            lts[1].inserirFinal(no.getInfo());
+            no = no.getProx();
+        }
+        
+        return lts;
+    }
+    
+    public void fusao(ListaDupla l1, ListaDupla l2, int seq)
+    {
+        int i=0, j=0, k=0, aux_seq=seq;
+        No  noI=l1.getInicio(), 
+            noJ=l2.getInicio(), 
+            noK=inicio;
+        
+        while(k < getTl()-1)
+        {
+            while(i < seq && j < seq)
+            {
+                if(noI.getInfo() < noJ.getInfo())
+                {
+                    noK.setInfo(noI.getInfo());
+                    
+                    i++;
+                    k++;
+                    noI = noI.getProx();
+                    noK = noK.getProx();
+                }
+                else
+                {
+                    noK.setInfo(noJ.getInfo());
+                    
+                    j++;
+                    k++;
+                    noJ = noJ.getProx();
+                    noK = noK.getProx();
+                }
+            }
+            
+            while(i < seq)
+            {
+                noK.setInfo(noI.getInfo());
+                
+                i++;
+                k++;
+                noI = noI.getProx();
+                noK = noK.getProx();
+            }
+            
+            while(j < seq)
+            {
+                noK.setInfo(noJ.getInfo());
+                
+                j++;
+                k++;
+                noJ = noJ.getProx();
+                noK = noK.getProx();
+            }
+            
+            seq = seq + aux_seq;
+        }
     }
     
     public void merge2()
@@ -358,9 +579,6 @@ class ListaDupla
         
     }
     
-    public int getTl() {
-        return tl;
-    }
     
     public void exibir()
     {
@@ -371,6 +589,19 @@ class ListaDupla
             aux=aux.getProx();
         }
         System.out.println();
+    }
+    
+    
+    public int getTl() {
+        return tl;
+    }
+
+    public No getInicio() {
+        return inicio;
+    }
+
+    public No getFim() {
+        return fim;
     }
 }
 
@@ -480,45 +711,45 @@ public class ListaAlgoritmos {
         
         for(int i=0 ; i < dados.length ; i++)
         {
-            listaInsercaoDireta.inserirFinal(i);
-//            listaInsercaoBinaria.inserirFinal(i); //faço depois
-            listaSelecaoDireta.inserirFinal(i);
-            listaShell.inserirFinal(i);
-            listaHeap.inserirFinal(i);
-            listaBolha.inserirFinal(i);
-            listaShake.inserirFinal(i);
-//            listaQuickSP.inserirFinal(i);
-//            listaQuickCP.inserirFinal(i);
-//            listaQuickSort.inserirFinal(i);
-//            listaMerge1.inserirFinal(i);
-//            listaMerge2.inserirFinal(i);
-//            listaComb.inserirFinal(i);
-//            listaGnome.inserirFinal(i);
-//            listaBucket.inserirFinal(i);
-//            listaRadix.inserirFinal(i);
-//            listaTim.inserirFinal(i);
+            listaInsercaoDireta.inserirFinal(dados[i]);
+//            listaInsercaoBinaria.inserirFinal(dados[i]); //faço depois
+            listaSelecaoDireta.inserirFinal(dados[i]);
+            listaShell.inserirFinal(dados[i]);
+            listaHeap.inserirFinal(dados[i]);
+            listaBolha.inserirFinal(dados[i]);
+            listaShake.inserirFinal(dados[i]);
+            listaQuickSP.inserirFinal(dados[i]);
+//            listaQuickCP.inserirFinal(dados[i]);
+            listaQuickSort.inserirFinal(dados[i]);
+            listaMerge1.inserirFinal(dados[i]);
+//            listaMerge2.inserirFinal(dados[i]);
+//            listaComb.inserirFinal(dados[i]);
+//            listaGnome.inserirFinal(dados[i]);
+//            listaBucket.inserirFinal(dados[i]);
+//            listaRadix.inserirFinal(dados[i]);
+//            listaTim.inserirFinal(dados[i]);
         }
     }
     
     public static void runOrdenarListas()
     {
         listaInsercaoDireta.insercaoDireta();
-        listaInsercaoBinaria.insercaoBinaria();
+//        listaInsercaoBinaria.insercaoBinaria();
         listaSelecaoDireta.selecaoDireta();
         listaShell.shell();
         listaHeap.heap();
         listaBolha.bolha();
         listaShake.shake();
         listaQuickSP.quickSP();
-        listaQuickCP.quickCP();
+//        listaQuickCP.quickCP();
         listaQuickSort.quickSort();
         listaMerge1.merge1();
-        listaMerge2.merge2();
-        listaComb.comb();
-        listaGnome.gnome();
-        listaBucket.bucket();
-        listaRadix.radix();
-        listaTim.tim();
+//        listaMerge2.merge2();
+//        listaComb.comb();
+//        listaGnome.gnome();
+//        listaBucket.bucket();
+//        listaRadix.radix();
+//        listaTim.tim();
     }
     
     public static void exibirDadosListas()

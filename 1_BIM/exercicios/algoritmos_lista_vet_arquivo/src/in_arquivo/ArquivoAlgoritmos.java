@@ -111,12 +111,13 @@ class Registro
     public void exibirReg()
     {
         int i;
-        System.out.print("codigo....." + this.codigo);
-        System.out.print(" nome.......");
-        String Snome = new String(nome);
-        System.out.print(Snome);
-        System.out.println(" idade......." + this.idade);
-        System.out.println("----------------------------------");
+        System.out.print("[" + codigo + "] ");
+//        System.out.print("codigo....." + this.codigo);
+//        System.out.print(" nome.......");
+//        String Snome = new String(nome);
+//        System.out.print(Snome);
+//        System.out.println(" idade......." + this.idade);
+//        System.out.println("----------------------------------");
     }
 
     static int length()
@@ -175,13 +176,11 @@ class Arquivo
         int i;
         Registro reg = new Registro();
         seekArq(0);
-        i = 0;
+        
         while (!this.eof())
         {
-            System.out.println("Posicao " + i);
             reg.leDoArq(arquivo);
             reg.exibirReg();
-            i++;
         }
         
         System.out.println();
@@ -367,6 +366,7 @@ class Arquivo
         
         inicio2=0 ;
         fim2=fileSize();
+        
         while(inicio2 < fim2)
         {
             for(i=inicio2 ; i < fim2 ; i++)
@@ -417,7 +417,7 @@ class Arquivo
 
         tl=fileSize();
 
-        while(dist > 4)
+        while(dist > 0)
         {
             for(i=0 ; i < dist ; i++)
             {
@@ -477,7 +477,9 @@ class Arquivo
     
     public void quickSP(int ini, int fim)
     {
-        int i=ini, j=fim;
+        int i=ini, 
+            j=fim;
+        
         Registro regI = new Registro();
         Registro regJ = new Registro();
         
@@ -567,16 +569,82 @@ class Arquivo
             quickSort(j+1, fim);
     }
     
-    
-    public void heap()
-    {
-        
-    }
-    
     public void quickCP()
     {
         
     }
+    
+    public void quickCP(int ini, int fim)
+    {
+        
+    }
+    
+    public void heap()
+    {
+        int pai, fd, fe, maiorf, tl = fileSize();
+        Registro rPai = new Registro(),
+                 rFd = new Registro(), 
+                 rFe = new Registro(), rMaiorf;
+        
+        while(tl > 1)
+        {
+            pai = tl/2-1;
+            while(pai >= 0)
+            {
+                fe=pai+pai+1;
+                fd=fe+1;
+                
+                seekArq(pai);
+                rPai.leDoArq(arquivo);
+                seekArq(fe);
+                rFe.leDoArq(arquivo);
+                seekArq(fd);
+                rFd.leDoArq(arquivo);
+                
+                if(fd < tl)
+                {
+                    if(rFd.getCodigo() < rFe.getCodigo())
+                    {
+                        rMaiorf = rFe;
+                        maiorf = fe;
+                    }
+                    else
+                    {
+                        rMaiorf = rFd;
+                        maiorf = fd;
+                    }
+                }
+                else
+                {
+                    rMaiorf = rFe;
+                    maiorf = fe;
+                }
+                
+                if(rMaiorf.getCodigo() > rPai.getCodigo())
+                {
+                    seekArq(maiorf);
+                    rPai.gravaNoArq(arquivo);
+                    seekArq(pai);
+                    rMaiorf.gravaNoArq(arquivo);
+                }
+                
+                pai--;
+            }
+            
+            seekArq(0);
+            rPai.leDoArq(arquivo);
+            seekArq(tl-1);
+            rFd.leDoArq(arquivo);
+            
+            seekArq(0);
+            rFd.gravaNoArq(arquivo);
+            seekArq(tl-1);
+            rPai.gravaNoArq(arquivo);
+            
+            tl--;
+        }
+    }
+    
     
     public void merge1()
     {
@@ -715,41 +783,41 @@ public class ArquivoAlgoritmos
         
         for(int i=0 ; i < dados.length ; i++)
         {
-//            arquivoInsercaoDireta.inserirFinal(i);
-//            arquivoInsercaoBinaria.inserirFinal(i);
-//            arquivoSelecaoDireta.inserirFinal(i);
-//            arquivoShell.inserirFinal(i);
-//            arquivoHeap.inserirFinal(i);
-//            arquivoQuickSP.inserirFinal(i);
-//            arquivoQuickCP.inserirFinal(i);
-//            arquivoQuickSort.inserirFinal(i);
-//            arquivoMerge1.inserirFinal(i);
-//            arquivoMerge2.inserirFinal(i);
-//            arquivoComb.inserirFinal(i);
-//            arquivoGnome.inserirFinal(i);
-//            arquivoBucket.inserirFinal(i);
-//            arquivoRadix.inserirFinal(i);
-//            arquivoTim.inserirFinal(i);
+//            arquivoInsercaoDireta.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoInsercaoBinaria.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoSelecaoDireta.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoShell.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+            arquivoHeap.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+            arquivoQuickSP.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoQuickCP.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoQuickSort.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoMerge1.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoMerge2.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoComb.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoGnome.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoBucket.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoRadix.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
+//            arquivoTim.inserirRegNoFinal(new Registro(dados[i], "blabla", 25));
         }
     }
     
     public static void ordenarListas()
     {
-        arquivoInsercaoDireta.insercaoDireta();
-        arquivoInsercaoBinaria.insercaoBinaria();
-        arquivoSelecaoDireta.selecaoDireta();
-        arquivoShell.shell();
+//        arquivoInsercaoDireta.insercaoDireta();
+//        arquivoInsercaoBinaria.insercaoBinaria();
+//        arquivoSelecaoDireta.selecaoDireta();
+//        arquivoShell.shell();
         arquivoHeap.heap();
         arquivoQuickSP.quickSP();
-        arquivoQuickCP.quickCP();
-        arquivoQuickSort.quickSort();
-        arquivoMerge1.merge1();
-        arquivoMerge2.merge2();
-        arquivoComb.comb();
-        arquivoGnome.gnome();
-        arquivoBucket.bucket();
-        arquivoRadix.radix();
-        arquivoTim.tim();
+//        arquivoQuickCP.quickCP();
+//        arquivoQuickSort.quickSort();
+//        arquivoMerge1.merge1();
+//        arquivoMerge2.merge2();
+//        arquivoComb.comb();
+//        arquivoGnome.gnome();
+//        arquivoBucket.bucket();
+//        arquivoRadix.radix();
+//        arquivoTim.tim();
     }
     
     public static void exibirDadosListas()

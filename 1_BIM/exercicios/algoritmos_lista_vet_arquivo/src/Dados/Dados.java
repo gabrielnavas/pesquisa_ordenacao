@@ -2,7 +2,7 @@ package Dados;
 
 public class Dados {
     
-    private final static int TL_GERAL = 22;
+    private final static int TL_GERAL = 16;
     
     
     public static int[] getDadosInt()

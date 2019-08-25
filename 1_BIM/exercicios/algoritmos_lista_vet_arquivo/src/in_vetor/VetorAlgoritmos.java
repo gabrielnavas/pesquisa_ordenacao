@@ -1,4 +1,4 @@
-package in_vetor;
+    package in_vetor;
 
 import Dados.Dados;
 
@@ -181,7 +181,7 @@ class Vetor {
                         vet[j] = vet[j+dist];
                         vet[j+dist] = aux;
                         
-                        for(int k=j ; k-dist >= 0 && vet[k] < vet[k-dist]; k--)
+                        for(int k=j ; k-dist >= 0 && vet[k] < vet[k-dist]; k-=dist)
                         {
                             aux = vet[k];
                             vet[k] = vet[k-dist];
@@ -234,7 +234,7 @@ class Vetor {
     
     public void quickSP()
     {
-        
+        quickSP(0, tl-1);
     }
     
     public void quickSP(int ini, int fim)
@@ -417,7 +417,7 @@ class Vetor {
             j=ini2, 
             k=0;
         
-        while(i < fim1 && j<=fim2)
+        while(i < fim1 && j <= fim2)
             if(vet[i] < vet[j])
                 aux[k++] = vet[i++];
             else
@@ -430,7 +430,7 @@ class Vetor {
             aux[k++] = vet[j++];
         
         for(i=0 ; i < k ; i++)
-            vet[ini2] = aux[i];
+            vet[ini1+1] = aux[i];
     }
     
     public void comb()
@@ -517,23 +517,23 @@ public class VetorAlgoritmos
         int[] dados = Dados.getDadosInt();
         for(int i=0 ; i < dados.length ; i++)
         {
-            vetInsercaoDireta.inserirFinal(i);
-            vetInsercaoBinaria.inserirFinal(i);
-            vetSelecaoDireta.inserirFinal(i);
-            vetBolha.inserirFinal(i);
-            vetShake.inserirFinal(i);
-            vetShell.inserirFinal(i);
-            vetHeap.inserirFinal(i);
-            vetQuickSP.inserirFinal(i);
-            vetQuickCP.inserirFinal(i);
-            vetQuickSort.inserirFinal(i);
-//            vetMerge1.inserirFinal(i);
-//            vetMerge2.inserirFinal(i);
-            vetComb.inserirFinal(i);
-            vetGnome.inserirFinal(i);
-//            vetBucket.inserirFinal(i);
-//            vetRadix.inserirFinal(i);
-//            vetTim.inserirFinal(i);
+            vetInsercaoDireta.inserirFinal(dados[i]);
+            vetInsercaoBinaria.inserirFinal(dados[i]);
+            vetSelecaoDireta.inserirFinal(dados[i]);
+            vetBolha.inserirFinal(dados[i]);
+            vetShake.inserirFinal(dados[i]);
+            vetShell.inserirFinal(dados[i]);
+            vetHeap.inserirFinal(dados[i]);
+            vetQuickSP.inserirFinal(dados[i]);
+            vetQuickCP.inserirFinal(dados[i]);
+            vetQuickSort.inserirFinal(dados[i]);
+            vetMerge1.inserirFinal(dados[i]);
+            vetMerge2.inserirFinal(dados[i]);
+            vetComb.inserirFinal(dados[i]);
+            vetGnome.inserirFinal(dados[i]);
+//            vetBucket.inserirFinal(dados[i]);
+//            vetRadix.inserirFinal(dados[i]);
+//            vetTim.inserirFinal(dados[i]);
         }
     }
         
