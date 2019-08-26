@@ -476,7 +476,37 @@ class Vetor {
     
     public void bucket()
     {
+        int tl = Dados.TL_GERAL,
+                hash;
+        int[] bucket;
+        Vetor[] buckets = new Vetor[tl];
+
+        // iniciar buckets
+        for(int i=0 ; i < tl ; i++)
+            buckets[i] = new Vetor();
         
+        // distruibuir valores os buckets
+        buckets[tl-1].inserirFinal(vet[0]);
+        for(int i=1 ; i < tl ; i++)
+        {
+            hash = ( (int) (vet[i] % tl) );
+            buckets[hash].inserirFinal(vet[i]);
+        }
+        
+        
+        // ordenar os valores de cada bucket
+        for(int i=0 ; i < tl ; i++)
+            buckets[i].insercaoDireta();
+        
+        
+        //pegar os valores ordenados dos buckets
+        for(int i=0, k=0 ; i < tl ; i++)
+        {
+            bucket = buckets[i].getVet();
+            
+            for(int j=0 ; j < buckets[i].getTl() ; j++)
+                vet[k++] = bucket[j];
+        }    
     }
     
     
@@ -531,7 +561,7 @@ public class VetorAlgoritmos
             vetMerge2.inserirFinal(dados[i]);
             vetComb.inserirFinal(dados[i]);
             vetGnome.inserirFinal(dados[i]);
-//            vetBucket.inserirFinal(dados[i]);
+            vetBucket.inserirFinal(dados[i]);
 //            vetRadix.inserirFinal(dados[i]);
 //            vetTim.inserirFinal(dados[i]);
         }

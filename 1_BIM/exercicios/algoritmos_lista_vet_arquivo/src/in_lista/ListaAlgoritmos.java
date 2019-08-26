@@ -299,7 +299,7 @@ class ListaDupla
 
                         noDist = getNo(noJ, -dist);
                         noK = noJ;
-                        for(int k=j ; k-dist >= 0 && noK.getInfo() < noDist.getInfo() ; k-=dist)
+                        for(int k=j ; k-dist >= i && noK.getInfo() < noDist.getInfo() ; k-=dist)
                         {   
                             aux = noK.getInfo();
                             noK.setInfo(noDist.getInfo());
