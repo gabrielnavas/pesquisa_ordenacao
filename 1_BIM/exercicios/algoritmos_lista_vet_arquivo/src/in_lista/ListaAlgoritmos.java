@@ -416,25 +416,24 @@ class ListaDupla
     {        
         int aux, i, j, pivo;
         No noI, noJ, noPivo;
-        
         i=ini;
         j=fim;
         pivo = (ini+fim)/2;
         noI=noIni;
         noJ=noFim;
-        noPivo = getNo(inicio, pivo);
+        noPivo = getNo(pivo);
         
         while(i < j)
         {
             while(noI.getInfo() < noPivo.getInfo())
             {
                 i++;
-                noI=noI.getProx();
+                noI = noI.getProx();
             }
             while(noJ.getInfo() > noPivo.getInfo())
             {
                 j--;
-                noJ=noJ.getAnt();
+                noJ = noJ.getAnt();
             }
             
             if(i <= j)
@@ -444,7 +443,10 @@ class ListaDupla
                 noJ.setInfo(aux);
                 
                 i++;
+                noI = noI.getProx();
+                
                 j--;
+                noJ = noJ.getAnt();
             }
         }
         
@@ -461,8 +463,6 @@ class ListaDupla
         
         while(seq < getTl())
         {
-//            l1 = particao(inicio, tl/2);
-//            l2 = particao(l1.getFim(), tl/2);
             lts = particao();
             fusao(lts[0], lts[1], seq);
             
@@ -719,7 +719,7 @@ public class ListaAlgoritmos {
             listaBolha.inserirFinal(dados[i]);
             listaShake.inserirFinal(dados[i]);
             listaQuickSP.inserirFinal(dados[i]);
-//            listaQuickCP.inserirFinal(dados[i]);
+            listaQuickCP.inserirFinal(dados[i]);
             listaQuickSort.inserirFinal(dados[i]);
             listaMerge1.inserirFinal(dados[i]);
 //            listaMerge2.inserirFinal(dados[i]);
@@ -741,7 +741,7 @@ public class ListaAlgoritmos {
         listaBolha.bolha();
         listaShake.shake();
         listaQuickSP.quickSP();
-//        listaQuickCP.quickCP();
+        listaQuickCP.quickCP();
         listaQuickSort.quickSort();
         listaMerge1.merge1();
 //        listaMerge2.merge2();
