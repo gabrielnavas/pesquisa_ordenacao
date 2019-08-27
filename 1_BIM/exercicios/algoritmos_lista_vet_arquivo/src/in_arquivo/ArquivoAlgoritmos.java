@@ -630,9 +630,9 @@ class Arquivo
     public void heap()
     {
         int pai, fd, fe, maiorf, tl = fileSize();
-        Registro rPai = new Registro(),
-                 rFd = new Registro(), 
-                 rFe = new Registro(), rMaiorf;
+        Registro regPai = new Registro(),
+                 regFd = new Registro(), 
+                 regFe = new Registro(), regMaiorf;
         
         while(tl > 1)
         {
@@ -643,51 +643,51 @@ class Arquivo
                 fd=fe+1;
                 
                 seekArq(pai);
-                rPai.leDoArq(arquivo);
+                regPai.leDoArq(arquivo);
                 seekArq(fe);
-                rFe.leDoArq(arquivo);
+                regFe.leDoArq(arquivo);
                 seekArq(fd);
-                rFd.leDoArq(arquivo);
+                regFd.leDoArq(arquivo);
                 
                 if(fd < tl)
                 {
-                    if(rFd.getCodigo() < rFe.getCodigo())
+                    if(regFd.getCodigo() < regFe.getCodigo())
                     {
-                        rMaiorf = rFe;
+                        regMaiorf = regFe;
                         maiorf = fe;
                     }
                     else
                     {
-                        rMaiorf = rFd;
+                        regMaiorf = regFd;
                         maiorf = fd;
                     }
                 }
                 else
                 {
-                    rMaiorf = rFe;
+                    regMaiorf = regFe;
                     maiorf = fe;
                 }
                 
-                if(rMaiorf.getCodigo() > rPai.getCodigo())
+                if(regMaiorf.getCodigo() > regPai.getCodigo())
                 {
                     seekArq(maiorf);
-                    rPai.gravaNoArq(arquivo);
+                    regPai.gravaNoArq(arquivo);
                     seekArq(pai);
-                    rMaiorf.gravaNoArq(arquivo);
+                    regMaiorf.gravaNoArq(arquivo);
                 }
                 
                 pai--;
             }
             
             seekArq(0);
-            rPai.leDoArq(arquivo);
+            regPai.leDoArq(arquivo);
             seekArq(tl-1);
-            rFd.leDoArq(arquivo);
+            regFd.leDoArq(arquivo);
             
             seekArq(0);
-            rFd.gravaNoArq(arquivo);
+            regFd.gravaNoArq(arquivo);
             seekArq(tl-1);
-            rPai.gravaNoArq(arquivo);
+            regPai.gravaNoArq(arquivo);
             
             tl--;
         }

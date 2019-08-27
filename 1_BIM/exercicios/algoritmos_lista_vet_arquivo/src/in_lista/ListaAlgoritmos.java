@@ -160,22 +160,22 @@ class ListaDupla
     public void bolha()
     {
         int tl, aux;
-        No pI;
+        No noI;
         
         tl=getTl();
         while(tl > 1)
         {
-            pI = inicio;
-            while(pI != fim)
+            noI = inicio;
+            while(noI != fim)
             {
-                if(pI.getInfo() > pI.getProx().getInfo())
+                if(noI.getInfo() > noI.getProx().getInfo())
                 {
-                   aux = pI.getInfo();
-                   pI.setInfo(pI.getProx().getInfo());
-                   pI.getProx().setInfo(aux);
+                   aux = noI.getInfo();
+                   noI.setInfo(noI.getProx().getInfo());
+                   noI.getProx().setInfo(aux);
                 }
                 
-                pI = pI.getProx();
+                noI = noI.getProx();
             }
             
             tl--;
