@@ -9,7 +9,7 @@ class Vetor {
     
     public Vetor()
     {
-        vet = new int[22];
+        vet = new int[Dados.TL_GERAL];
         tl=0;
     }
 
@@ -417,7 +417,7 @@ class Vetor {
             j=ini2, 
             k=0;
         
-        while(i < fim1 && j <= fim2)
+        while(i <= fim1 && j <= fim2)
             if(vet[i] < vet[j])
                 aux[k++] = vet[i++];
             else
@@ -474,6 +474,7 @@ class Vetor {
         }
     }
     
+    ///////////////////////////////////BUGGG
     public void bucket()
     {
         int tl = Dados.TL_GERAL,
@@ -486,7 +487,7 @@ class Vetor {
             buckets[i] = new Vetor();
         
         // distruibuir valores os buckets
-        buckets[tl-1].inserirFinal(vet[0]);
+        buckets[tl-1].inserirFinal(vet[0]); 
         for(int i=1 ; i < tl ; i++)
         {
             hash = ( (int) (vet[i] % tl) );

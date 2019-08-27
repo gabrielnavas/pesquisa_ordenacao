@@ -110,7 +110,7 @@ class ListaDupla
     {
         No aux = inicio;
         
-        while(pos >= 0)
+        while(pos > 0)
         {
             aux = aux.getProx();
             pos--;
@@ -289,7 +289,9 @@ class ListaDupla
                 noJ = noI;
                 for(int j=i ; j+dist < tl ; j+=dist)
                 {
-                    noDist = getNo(noJ, dist);
+                    noJ = getNo(j);
+                    noDist = getNo(j+dist);
+                    
                     if(noJ.getInfo() > noDist.getInfo())
                     {
                         aux = noJ.getInfo();
@@ -297,21 +299,19 @@ class ListaDupla
                         noDist.setInfo(aux);
                     
 
-                        noDist = getNo(noJ, -dist);
+                        noDist = getNo(j-dist);
                         noK = noJ;
                         for(int k=j ; k-dist >= i && noK.getInfo() < noDist.getInfo() ; k-=dist)
                         {   
+                            noDist = getNo(k-dist);
+                            noK = getNo(k);
+                            
                             aux = noK.getInfo();
                             noK.setInfo(noDist.getInfo());
                             noDist.setInfo(aux);
-
-                            noK = getNo(noK, -dist);
                         }
                     }
-                    
-                    noJ = getNo(noJ, dist);
                 }
-                
                 noI = noI.getProx();
             }
             

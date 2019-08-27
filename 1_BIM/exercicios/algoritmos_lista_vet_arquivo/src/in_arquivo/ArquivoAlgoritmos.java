@@ -447,6 +447,7 @@ class Arquivo
                         regJ.gravaNoArq(arquivo);
                     }
 
+                    
                     seekArq(j);
                     regK.leDoArq(arquivo);
                     seekArq(j-dist);
@@ -455,15 +456,15 @@ class Arquivo
                     for(k=j ; k-dist >= i && regK.getCodigo() < regDist.getCodigo() ; k-=dist)
                     {
                         seekArq(k);
-                        regDist.gravaNoArq(arquivo);
-                        seekArq(k-dist);
-                        regK.gravaNoArq(arquivo);
-                        
-                        seekArq(k-dist);
                         regK.leDoArq(arquivo);
 
                         seekArq(k-dist);
                         regDist.leDoArq(arquivo);
+                        
+                        seekArq(k);
+                        regDist.gravaNoArq(arquivo);
+                        seekArq(k-dist);
+                        regK.gravaNoArq(arquivo);
                     }
                 }
 
@@ -695,18 +696,14 @@ class Arquivo
     
     public void merge1()
     {
-        Arquivo arq1 = null; //tem que instanciar dentro do while por causa que a cada loop precisa
-        Arquivo arq2 = null;
+        Arquivo[] arqs;
         
         int seq=1, tl=fileSize();
         
         while(seq < tl)
         {
-            arq1 = new Arquivo("aux1");
-            arq2 = new Arquivo("aux2");
-        
-            particao(arq1, arq2);
-            fusao(arq1, arq2, seq);
+            arqs = particao();
+            fusao(arqs[0], arqs[1], seq);
             
             new File("aux1").delete();
             new File("aux2").delete();
@@ -715,8 +712,14 @@ class Arquivo
         }
     }
     
-    public void particao(Arquivo arq1, Arquivo arq2)
+    public Arquivo[] particao()
     {
+        Arquivo arq1 = new Arquivo("aux1");
+        Arquivo arq2 = new Arquivo("aux2");
+        Arquivo[] arqs = new Arquivo[2];
+        arqs[0] = arq1;
+        arqs[1] = arq2;
+        
         int meio = fileSize()/2;
         Registro regAux = new Registro();
         
@@ -730,6 +733,8 @@ class Arquivo
             regAux.leDoArq(arquivo);
             arq2.inserirRegNoFinal(regAux);
         }
+        
+        return arqs;
     }
     
     public void fusao(Arquivo arq1, Arquivo arq2, int seq)
@@ -928,7 +933,9 @@ public class ArquivoAlgoritmos
     public static void deletarExistentes()
     {
         new File("aux1").delete(); 
-        new File("aux2").delete();
+        new File("aux2").delete(); 
+        new File("aux").delete(); 
+        new File("aux").delete();
         
         new File("arquivoInsercaoDireta.dat").delete();
         new File("arquivoInsercaoBinaria.dat").delete();
