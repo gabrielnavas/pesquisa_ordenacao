@@ -1,6 +1,7 @@
     package in_vetor;
 
 import Dados.Dados;
+import static java.lang.Math.min;
 
 class Vetor {
     
@@ -9,7 +10,7 @@ class Vetor {
     
     public Vetor()
     {
-        vet = new int[Dados.TL_GERAL];
+        this.vet = new int[Dados.TL_GERAL];
         tl=0;
     }
 
@@ -407,30 +408,30 @@ class Vetor {
             meio = (esq+dir)/2;
             merge2(aux, esq, meio);
             merge2(aux, meio+1, dir);
-            fusao(aux, esq, meio, meio+1, dir);
+            fusao(aux, esq, meio, dir);
         }
     }
     
-    public void fusao(int aux[], int ini1, int fim1, int ini2, int fim2)
+    public void fusao(int aux[], int ini, int meio, int fim)
     {
-        int i=ini1, 
-            j=ini2, 
-            k=0;
+        int i=ini, 
+            j=meio+1, 
+            k=ini;
         
-        while(i <= fim1 && j <= fim2)
+        while(i <= meio  && j <= fim)
             if(vet[i] < vet[j])
                 aux[k++] = vet[i++];
             else
                 aux[k++] = vet[j++];
             
-        while(i <= fim1)
+        while(i <= meio)
             aux[k++] = vet[i++];
         
-        while(j <= fim2)
+        while(j <= fim)
             aux[k++] = vet[j++];
         
-        for(i=0 ; i < k ; i++)
-            vet[ini1+1] = aux[i];
+        for(i=ini ; i <= fim ; i++)
+            vet[i] = aux[i];
     }
     
     public void comb()
@@ -453,6 +454,31 @@ class Vetor {
         }
     }
     
+    public void comb2()
+    {
+        int i, j, intervalo, trocado = 1, aux;
+        NoLista no1, no2;
+	intervalo = qtde();
+	while (intervalo > 1 || trocado == 1)
+	{
+            intervalo = intervalo * 10 / 13;
+            if (intervalo == 9 || intervalo == 10) intervalo = 11;
+            if (intervalo < 1) intervalo = 1;
+            trocado = 0;
+            for (i = 0, j = intervalo; j < qtde(); i++, j++)
+            {
+                no1 = pegarNo(i);
+                no2 = pegarNo(j);
+                if (no1.getInfo() > no2.getInfo())
+                {
+                    aux = no1.getInfo();
+                    no1.setInfo(no2.getInfo());
+                    no2.setInfo(aux);
+                    trocado = 1;
+                }
+            }
+	}
+    }
     
     public void gnome()
     {
@@ -486,22 +512,24 @@ class Vetor {
         for(int i=0 ; i < tl ; i++)
             buckets[i] = new Vetor();
         
+        
         // distruibuir valores os buckets
-        buckets[tl-1].inserirFinal(vet[0]); 
-        for(int i=1 ; i < tl ; i++)
+        for(int i=0 ; i < tl ; i++)
         {
-            hash = ( (int) (vet[i] % tl) );
+//            hash = ( (int) (vet[i] * tl) );
+            hash = hashBucket(vet[i]);
             buckets[hash].inserirFinal(vet[i]);
         }
         
-        
         // ordenar os valores de cada bucket
         for(int i=0 ; i < tl ; i++)
+        {
             buckets[i].insercaoDireta();
-        
+//            buckets[i].exibir();
+        }
         
         //pegar os valores ordenados dos buckets
-        for(int i=0, k=0 ; i < tl ; i++)
+        for(int i=0, k=0 ; i < 5 ; i++)
         {
             bucket = buckets[i].getVet();
             
@@ -510,21 +538,135 @@ class Vetor {
         }    
     }
     
+    public int hashBucket(int x)
+    {   
+        return (x >= 10) ? 
+                ((int) x/ 100) : 0;
+    }
     
-    public void radix()
+    public void counting()
     {
+        int maior;
+        int[] vetFreq;
+        int[] vetSaida;
 
+        maior = vet[0];
+        for(int i = 1; i < tl; i++)
+            if(vet[i] > maior)
+                maior = vet[i];
+        
+        vetFreq = new int[maior];
+        for(int i = 0; i < tl; i++)
+            vetFreq[vet[i]-1] ++;
+        
+        for(int i = 1; i < maior; i++)
+            vetFreq[i] += vetFreq[i-1];
+        
+        vetSaida = new int[tl];
+        for(int i = 0; i < tl; i++)
+        {
+            vetSaida[ vetFreq[ vet[i-1] -1 ] ] = vet[i];
+            vetFreq[ vet[i-1] ]--;
+        }
+        
+        for(int i = 0; i < tl; i++)
+            vet[i] = vetSaida[i];
     }
     
-    public void tim()
+    
+    public void radix() 
     {
+	int[] b;
+	int maior = vet[0];
+	int exp = 1;
+
+	b = new int[vet.length];
+
+	for (int i = 0; i < vet.length; i++) {
+            if (vet[i] > maior)
+                    maior = vet[i];
+	}
         
+	while (maior/exp > 0) 
+        {
+		int[] freq = new int[10];
+                
+		for (int i = 0; i < vet.length; i++)
+			freq[(vet[i] / exp) % 10]++;
+
+		for (int i = 1; i < 10; i++)
+			freq[i] += freq[i - 1];
+
+		for (int i = vet.length - 1; i >= 0; i--)
+			b[--freq[(vet[i] / exp) % 10]] = vet[i];
+
+		for (int i = 0; i < vet.length; i++)
+			vet[i] = b[i];
+
+		exp *= 10;
+	}
     }
+    
+    public void insercao_direta_tim (int ini, int fim)
+    {
+        NoLista no1, no2;
+        int i = ini, pos, num2, numero;
+
+        while(i < fim)
+        {
+            no1 = pegarNo(i);
+            numero = no1.getInfo();
+
+            pos = i;
+
+            no2 = pegarNo(pos-1);
+            num2 = no2.getInfo();
+            
+            while(pos > 0 && numero < num2)
+            {
+                no1.setInfo(num2);
+
+                pos--;
+
+                if(pos > 0)
+                {
+                    no1 = pegarNo(pos);
+
+                    no2 = pegarNo(pos-1);
+                    num2 = no2.getInfo();
+                }
+            }
+            no2.setInfo(numero);
+            i++;
+        }
+    }
+    
+    public void tim() 
+    { 
+        int total = qtde(), r = 32, i, size, meio, dir, esq;
+        int[] aux = new int[r];
+        
+        for (i = 0; i < total; i+=r) 
+            insercao_direta_tim(i, min((i+31), (total))); 
+        
+        for (size = r; size < total; size = 2*size) 
+        { 
+            for (esq = 0; esq < total; esq += 2*size) 
+            { 
+                meio = esq + size - 1; 
+                dir = min((esq + 2*size - 1), (total-1)); 
+
+                fusao(aux, esq, meio, dir); 
+            } 
+        } 
+    } 
 }
 
 
 public class VetorAlgoritmos
 {
+    static int[] dados = Dados.getDadosInt();
+    
     static Vetor vetInsercaoDireta = new Vetor();
     static Vetor vetInsercaoBinaria = new Vetor();
     static Vetor vetSelecaoDireta = new Vetor();
@@ -544,8 +686,7 @@ public class VetorAlgoritmos
     static Vetor vetTim = new Vetor();
 
     public static void inserirDadosVetores()
-    {
-        int[] dados = Dados.getDadosInt();
+    {   
         for(int i=0 ; i < dados.length ; i++)
         {
             vetInsercaoDireta.inserirFinal(dados[i]);
@@ -563,8 +704,8 @@ public class VetorAlgoritmos
             vetComb.inserirFinal(dados[i]);
             vetGnome.inserirFinal(dados[i]);
             vetBucket.inserirFinal(dados[i]);
-//            vetRadix.inserirFinal(dados[i]);
-//            vetTim.inserirFinal(dados[i]);
+            vetRadix.inserirFinal(dados[i]);
+            vetTim.inserirFinal(dados[i]);
         }
     }
         
@@ -586,7 +727,7 @@ public class VetorAlgoritmos
         vetGnome.gnome();
         vetBucket.bucket();
         vetRadix.radix();
-        vetTim.tim();
+//        vetTim.tim();
     }
     
     public static void exibirVetores()
@@ -648,5 +789,6 @@ public class VetorAlgoritmos
         inserirDadosVetores();
         ordenarVetores();
         exibirVetores();
+        
     }
 }

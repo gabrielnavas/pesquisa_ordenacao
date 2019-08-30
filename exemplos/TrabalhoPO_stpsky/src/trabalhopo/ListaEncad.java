@@ -294,17 +294,17 @@ public class ListaEncad {
         
     }
     
-    public void fusao_direta_merge1()  //andressa
+    public void fusao_direta_merge1()  
     {
         
     }
     
-    public void fusao_direta_merge2()    //laura
+    public void fusao_direta_merge2()    
     {
         
     }
     
-    public void counting()  //andressa
+    public void counting()  
     {
         int maior = ini.getInfo(), i, total = qtde();
         NoLista aux = ini.getProx();

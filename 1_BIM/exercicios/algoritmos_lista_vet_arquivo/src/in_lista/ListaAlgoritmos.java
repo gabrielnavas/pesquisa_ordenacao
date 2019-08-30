@@ -120,6 +120,54 @@ class ListaDupla
     }
     
     
+    public int[] getMaiorMenorValor()
+    {
+        int[] retorno = new int[2];
+        int maior, 
+            menor;
+        
+        No noAux;
+        
+        if(!isEmpty())
+        {
+            maior = inicio.getInfo();
+            menor = inicio.getInfo();
+            
+            noAux = inicio.getProx();
+            for(int i = 1; i < tl; i++)
+            {
+                if(noAux.getInfo() > maior)
+                    maior = noAux.getInfo();
+
+                if(noAux.getInfo() < menor)
+                    menor = noAux.getInfo();
+                
+                noAux = noAux.getProx();
+            }
+            
+            retorno[0] = menor;
+            retorno[1] = maior;
+        }
+        
+        return retorno;
+    }
+    
+    public int getMaiorValor()
+    {
+        int maior = inicio.getInfo();
+        
+        No noAux = inicio.getProx();
+        while(noAux != null)
+        {
+            if(noAux.getInfo() > maior)
+                maior = noAux.getInfo();
+            
+            noAux = noAux.getProx();
+        }
+        
+        return maior;
+    }
+    
     // ================= Algoritmos
     
     public void insercaoDireta()
@@ -569,9 +617,104 @@ class ListaDupla
         
     }
     
+    public boolean isEmpty()
+    {
+        return inicio == null;
+    }
+    
+    
+    public void counting()  
+    {
+        int[] maiorMenor = getMaiorMenorValor(),
+              vetFreq, vetSaida;
+        
+        int menor = maiorMenor[0],
+            maior = maiorMenor[1], 
+            tl = getTl(),
+            range = maior - menor + 1;
+        
+        No aux;
+                
+        //frequencia
+        vetFreq = new int[range];
+        aux = inicio;
+        for(int i = 0; i < tl; i++)
+        {
+            vetFreq[ aux.getInfo() - menor ] += 1;
+            aux = aux.getProx();
+        }
+        
+        //cumulativa
+        for(int i = 1; i < range; i++)
+            vetFreq[i] += vetFreq[i-1];
+        
+        
+        vetSaida = new int[tl];
+        aux = inicio;
+        for(int i = 0; i < tl; i++)
+        {
+            vetSaida[ vetFreq[ aux.getInfo() - menor ] - 1] = aux.getInfo();
+            vetFreq[ aux.getInfo() - menor ]--;
+            aux = aux.getProx();
+        }
+        
+        aux = inicio;
+        for(int i = 0; i < tl; i++)
+        {
+            aux.setInfo(vetSaida[i]);
+            aux = aux.getProx();
+        }
+    }
+    
+    
     public void radix()
     {
+        exibir();
         
+        int maior = getMaiorValor(),
+            expo=1;
+        
+        int[] vetFreq, vetSaida;
+
+                int tl = getTl();
+                No aux;
+
+        while(maior/expo > 0)
+        {
+                   
+            //frequencia
+            vetFreq = new int[10];
+            aux = inicio;
+            for(int i = 0; i < tl; i++)
+            {
+                System.out.print((aux.getInfo() / expo) % 10 + " ");
+                vetFreq[ (aux.getInfo() / expo) % 10 /*- menor*/ ]++;
+                aux = aux.getProx();
+            }
+
+            //cumulativa
+            for(int i = 1; i < 10; i++)
+                vetFreq[i] += vetFreq[i-1];
+
+
+            vetSaida = new int[tl];
+            aux = inicio;
+            for(int i = tl-1; i >= 0 ; i--)
+            {
+                vetSaida[ vetFreq[ (aux.getInfo() / expo) % 10 /*- menor */ ] - 1] = aux.getInfo();
+//                vetFreq[ (aux.getInfo()/expo) % 10 /*- menor*/ ]--;
+                aux = aux.getProx();
+            }
+
+            aux = inicio;
+            for(int i = 0; i < tl; i++)
+            {
+                aux.setInfo(vetSaida[i]);
+                aux = aux.getProx();
+            }
+            
+            expo = expo* 10;
+        }
     }
     
     public void tim()
@@ -702,6 +845,7 @@ public class ListaAlgoritmos {
     static ListaDupla listaComb = new ListaDupla();
     static ListaDupla listaGnome = new ListaDupla();
     static ListaDupla listaBucket = new ListaDupla();
+    static ListaDupla listaCounting = new ListaDupla();
     static ListaDupla listaRadix = new ListaDupla();
     static ListaDupla listaTim = new ListaDupla();
         
@@ -726,7 +870,8 @@ public class ListaAlgoritmos {
 //            listaComb.inserirFinal(dados[i]);
 //            listaGnome.inserirFinal(dados[i]);
 //            listaBucket.inserirFinal(dados[i]);
-//            listaRadix.inserirFinal(dados[i]);
+            listaCounting.inserirFinal(dados[i]);
+            listaRadix.inserirFinal(dados[i]);
 //            listaTim.inserirFinal(dados[i]);
         }
     }
@@ -735,20 +880,21 @@ public class ListaAlgoritmos {
     {
         listaInsercaoDireta.insercaoDireta();
 //        listaInsercaoBinaria.insercaoBinaria();
-        listaSelecaoDireta.selecaoDireta();
-        listaShell.shell();
-        listaHeap.heap();
-        listaBolha.bolha();
-        listaShake.shake();
-        listaQuickSP.quickSP();
-        listaQuickCP.quickCP();
-        listaQuickSort.quickSort();
-        listaMerge1.merge1();
+//        listaSelecaoDireta.selecaoDireta();
+//        listaShell.shell();
+//        listaHeap.heap();
+//        listaBolha.bolha();
+//        listaShake.shake();
+//        listaQuickSP.quickSP();
+//        listaQuickCP.quickCP();
+//        listaQuickSort.quickSort();
+//        listaMerge1.merge1();
 //        listaMerge2.merge2();
 //        listaComb.comb();
 //        listaGnome.gnome();
 //        listaBucket.bucket();
-//        listaRadix.radix();
+        listaCounting.counting();
+        listaRadix.radix();
 //        listaTim.tim();
     }
     
@@ -799,6 +945,9 @@ public class ListaAlgoritmos {
         System.out.print("Bucket:            ");
         listaBucket.exibir();
 
+        System.out.print("Counting:          ");
+        listaCounting.exibir();
+        
         System.out.print("Radix:             ");
         listaRadix.exibir();
 

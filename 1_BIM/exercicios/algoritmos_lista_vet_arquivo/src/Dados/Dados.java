@@ -2,20 +2,27 @@ package Dados;
 
 public class Dados {
     
-    public final static int TL_GERAL = 16;
+    private static int range_inicio = 0;
+    private static int range_fim = 16;
     
+    public static int TL_GERAL = Math.abs(range_inicio) + Math.abs(range_fim);
+    
+    private static int[] gerarDadosIntAleatorios(int rangeInicio, int rangeFim, int tamanhoFisico)
+    {
+        int[] dados = new int[tamanhoFisico];
+        
+        for(int i=0 ; i < tamanhoFisico ; i++)
+            dados[i] = 0;
+
+
+        for(int i=0 ; i < tamanhoFisico ; i++)
+            dados[i] = (int)(Math.random() * rangeFim ) + rangeInicio;
+
+        return dados;
+    }
     
     public static int[] getDadosInt()
-    {
-        int[] dados = new int[TL_GERAL];
-        
-        for(int i=0, j=TL_GERAL ; i < TL_GERAL ; i++, j--)
-            dados[i] = j;
-        
-        dados[4+1] = dados[4];
-        dados[8+1] = dados[8];
-        dados[14+1] = dados[14];
-        
-        return dados;
+    {   
+        return gerarDadosIntAleatorios(range_inicio, range_fim, TL_GERAL);
     }
 }
