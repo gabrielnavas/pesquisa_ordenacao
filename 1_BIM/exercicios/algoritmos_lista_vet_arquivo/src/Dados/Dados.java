@@ -3,9 +3,10 @@ package Dados;
 public class Dados {
     
     private static int range_inicio = 0;
-    private static int range_fim = 16;
+    private static int range_fim = 1024;
     
-    public static int TL_GERAL = Math.abs(range_inicio) + Math.abs(range_fim);
+//    public static int TL_GERAL =  39;
+    public static int TL_GERAL =   Math.abs(range_inicio) + Math.abs(range_fim);
     
     private static int[] gerarDadosIntAleatorios(int rangeInicio, int rangeFim, int tamanhoFisico)
     {
@@ -18,6 +19,7 @@ public class Dados {
         for(int i=0 ; i < tamanhoFisico ; i++)
             dados[i] = (int)(Math.random() * rangeFim ) + rangeInicio;
 
+//        return new int[]{2,11,15,5,7,5};
         return dados;
     }
     

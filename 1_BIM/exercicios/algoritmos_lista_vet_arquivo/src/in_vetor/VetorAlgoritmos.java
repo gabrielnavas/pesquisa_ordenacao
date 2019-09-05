@@ -3,6 +3,40 @@
 import Dados.Dados;
 import static java.lang.Math.min;
 
+class Pilha
+{
+    private int vet[];
+    private int top;
+    private int tf;
+    
+    public Pilha(int tf)
+    {
+        vet = new int[tf];
+        top=-1;
+        this.tf = tf;
+    }
+    
+    public void push(int n)
+    {   
+        vet[++top] = n;
+    }
+    
+    public int pop()
+    {
+        return vet[top--];
+    }
+    
+    public boolean isFull()
+    {
+        return top == tf;
+    }
+    
+    public boolean isEmpty()
+    {
+        return top == -1;
+    }
+}
+    
 class Vetor {
     
     private int[] vet;
@@ -265,6 +299,55 @@ class Vetor {
             quickSP(j+1, fim);
     }
     
+    
+    public void quickSPIterativo()
+    {
+        int ini, fim, i, j, aux;
+        
+        Pilha p = new Pilha(5000);
+        
+        p.push(0); p.push(tl-1);
+        
+        while(!p.isEmpty())
+        {
+            fim=p.pop(); 
+            ini=p.pop();
+            
+            i=ini;
+            j=fim; 
+
+            while(i < j)
+            {
+                while(i < j && vet[i] <= vet[j])
+                    i++;
+
+                aux = vet[i];
+                vet[i]=vet[j];
+                vet[j]=aux;
+
+                while(i < j && vet[j] >= vet[i])
+                    j--;
+
+                aux = vet[i];
+                vet[i]=vet[j];
+                vet[j]=aux;
+            }
+            
+            if(ini < i-1)
+            {
+                p.push(ini); 
+                p.push(i-1);
+            }
+            
+            if(j+1 < fim)
+            {
+                p.push(j+1); 
+                p.push(fim);
+            }
+        }
+    }
+    
+    
     public void quickSort()
     {
         quickSort(0, tl-1);
@@ -297,6 +380,55 @@ class Vetor {
             quickSP(j+1, fim);
     }
     
+    public void quickSortIterativo()
+    {
+        int i, j, aux, ini, fim;
+        boolean flag;
+        
+        Pilha p = new Pilha(5000);
+        
+        p.push(0);
+        p.push(tl-1);
+        
+        while(!p.isEmpty())
+        {
+            fim = p.pop();
+            ini = p.pop();
+            
+            i=ini;
+            j=fim;
+            flag= true;
+            
+            while(i < j)
+            {
+                if(flag)
+                    while(i < j && vet[i] <= vet[j])
+                        i++;
+
+                else
+                    while(i < j && vet[j] >= vet[i])
+                        j--;
+
+                aux = vet[i];
+                vet[i]=vet[j];
+                vet[j]=aux;
+                flag=!flag;
+            }
+            
+            if(ini < i-1)
+            {
+                p.push(ini);
+                p.push(i-1);
+
+            }
+
+            if(j+1 < fim)
+            {
+                p.push(0);
+                p.push(tl-1);
+            }    
+        }
+    }
     
     public void quickCP()
     {
@@ -335,7 +467,56 @@ class Vetor {
             quickCP(i, fim);
     }
     
-    
+    public void quickCPIterativo()
+    {
+        int i, j, ini, fim , aux , pivo; 
+        
+        Pilha p = new Pilha(5000);
+        
+        p.push(0);
+        p.push(tl-1);
+
+        while(!p.isEmpty())
+        {
+            fim = p.pop();
+            ini = p.pop();
+            pivo = vet[(ini+fim)/2];
+            
+            i=ini;
+            j = fim;
+            
+            while(i<j)
+            {
+                while(vet[i] < pivo)
+                    i++;
+                while(vet[j] > pivo)
+                    j--;
+
+                if(i <= j)
+                {
+                    aux = vet[i];
+                    vet[i]=vet[j];
+                    vet[j]=aux;
+
+                    i++;
+                    j--;
+                }
+            }
+
+            if(ini < j)
+            {
+                p.push(ini);
+                p.push(j);
+                
+            }
+
+            else if(i < fim)
+            {                
+                p.push(i);
+                p.push(fim);
+            }
+        }
+    }
     
     // =========================== merge 1
     public void merge1()
@@ -434,7 +615,7 @@ class Vetor {
             vet[i] = aux[i];
     }
     
-    public void comb()
+    public void comb_simples()
     {
         int dist, i, aux;
         
@@ -454,29 +635,34 @@ class Vetor {
         }
     }
     
-    public void comb2()
+    public void comb()
     {
-        int i, j, intervalo, trocado = 1, aux;
-        NoLista no1, no2;
-	intervalo = qtde();
-	while (intervalo > 1 || trocado == 1)
+        int dist, aux;
+        boolean troca;
+//        NoLista no1, no2;
+            
+        troca=true;
+        dist = tl;
+	while (dist > 1 || troca )
 	{
-            intervalo = intervalo * 10 / 13;
-            if (intervalo == 9 || intervalo == 10) intervalo = 11;
-            if (intervalo < 1) intervalo = 1;
-            trocado = 0;
-            for (i = 0, j = intervalo; j < qtde(); i++, j++)
-            {
-                no1 = pegarNo(i);
-                no2 = pegarNo(j);
-                if (no1.getInfo() > no2.getInfo())
+            dist = dist * 10 / 13;
+            
+            if (dist == 9 || dist == 10) 
+                dist = 11;
+            
+            if (dist < 1) 
+                dist = 1;
+            
+            troca = false;
+            
+            for (int i = 0, j = dist; j < tl ; i++, j++)
+                if (vet[i] > vet[i+dist])
                 {
-                    aux = no1.getInfo();
-                    no1.setInfo(no2.getInfo());
-                    no2.setInfo(aux);
-                    trocado = 1;
+                    aux = vet[i];
+                    vet[i]=vet[i+dist];
+                    vet[i+dist] = aux;
+                    troca = true;
                 }
-            }
 	}
     }
     
@@ -609,57 +795,92 @@ class Vetor {
     
     public void insercao_direta_tim (int ini, int fim)
     {
-        NoLista no1, no2;
-        int i = ini, pos, num2, numero;
+        int i, pos, num;
 
+        i = ini;
         while(i < fim)
         {
-            no1 = pegarNo(i);
-            numero = no1.getInfo();
+            num = vet[i+1];
+            pos = i+1;
 
-            pos = i;
-
-            no2 = pegarNo(pos-1);
-            num2 = no2.getInfo();
-            
-            while(pos > 0 && numero < num2)
+            while(pos > ini && num < vet[pos-1])
             {
-                no1.setInfo(num2);
-
+                vet[pos] = vet[pos-1];
                 pos--;
-
-                if(pos > 0)
-                {
-                    no1 = pegarNo(pos);
-
-                    no2 = pegarNo(pos-1);
-                    num2 = no2.getInfo();
-                }
             }
-            no2.setInfo(numero);
+            
+            vet[pos] = num;
             i++;
         }
     }
     
+    public void merge_tim(int esq, int meio, int dir)
+    {
+        int[] aux = new int[tl];
+        
+        merge_tim(aux, esq, meio, dir);
+    }
+    
+    public void merge_tim(int[] aux, int esq, int meio, int dir)
+    {
+//        int meio;
+        
+        if(esq < dir)
+        {
+//            meio = (esq+dir)/2;
+            merge2(aux, esq, meio);
+            merge2(aux, meio+1, dir);
+            fusao(aux, esq, meio, dir);
+        }
+    }
+    
+    public void fusao_tim(int aux[], int ini, int meio, int fim)
+    {
+        int i=ini, 
+            j=meio+1, 
+            k=ini;
+        
+        while(i <= meio  && j <= fim)
+            if(vet[i] < vet[j])
+                aux[k++] = vet[i++];
+            else
+                aux[k++] = vet[j++];
+            
+        while(i <= meio)
+            aux[k++] = vet[i++];
+        
+        while(j <= fim)
+            aux[k++] = vet[j++];
+        
+        for(i=ini ; i <= fim ; i++)
+            vet[i] = aux[i];
+    }
+    
     public void tim() 
     { 
-        int total = qtde(), r = 32, i, size, meio, dir, esq;
-        int[] aux = new int[r];
+        int run = 32, meio, dir, esq;
         
-        for (i = 0; i < total; i+=r) 
-            insercao_direta_tim(i, min((i+31), (total))); 
+        if(tl <= 32)
+            insercaoDireta();
+        else
+            for (int i = 0; i < tl; i += run) 
+                insercao_direta_tim(i, min( i+run-1, tl-1) );
+//        exibir();
         
-        for (size = r; size < total; size = 2*size) 
-        { 
-            for (esq = 0; esq < total; esq += 2*size) 
+
+        for (int size = run; size < tl; size = 2*size)
+        {
+            for (esq = 0; esq < tl; esq += 2*size) 
             { 
                 meio = esq + size - 1; 
-                dir = min((esq + 2*size - 1), (total-1)); 
+                dir = min( esq + 2*size - 1, tl-1); 
 
+                int[] aux = new int[dir+1];
+                
                 fusao(aux, esq, meio, dir); 
-            } 
-        } 
-    } 
+            }
+        }
+    }
 }
 
 
@@ -675,8 +896,11 @@ public class VetorAlgoritmos
     static Vetor vetShell = new Vetor();
     static Vetor vetHeap = new Vetor();
     static Vetor vetQuickSP = new Vetor();
+    static Vetor vetQuickSPIterativo = new Vetor();
     static Vetor vetQuickCP = new Vetor();
+    static Vetor vetQuickCPIterativo = new Vetor();
     static Vetor vetQuickSort = new Vetor();
+    static Vetor vetQuickSortIterativo = new Vetor();
     static Vetor vetMerge1 = new Vetor();
     static Vetor vetMerge2 = new Vetor();
     static Vetor vetComb = new Vetor();
@@ -697,9 +921,12 @@ public class VetorAlgoritmos
             vetShell.inserirFinal(dados[i]);
             vetHeap.inserirFinal(dados[i]);
             vetQuickSP.inserirFinal(dados[i]);
+            vetQuickSPIterativo.inserirFinal(dados[i]);
             vetQuickCP.inserirFinal(dados[i]);
+            vetQuickCPIterativo.inserirFinal(dados[i]);
             vetQuickSort.inserirFinal(dados[i]);
-            vetMerge1.inserirFinal(dados[i]);
+            vetQuickSortIterativo.inserirFinal(dados[i]);
+//            vetMerge1.inserirFinal(dados[i]);
             vetMerge2.inserirFinal(dados[i]);
             vetComb.inserirFinal(dados[i]);
             vetGnome.inserirFinal(dados[i]);
@@ -718,8 +945,11 @@ public class VetorAlgoritmos
         vetShell.shell();
         vetHeap.heap();
         vetQuickSP.quickSP();
+        vetQuickSPIterativo.quickSPIterativo();
         vetQuickCP.quickCP();
+        vetQuickCP.quickCPIterativo();
         vetQuickSort.quickSort();
+        vetQuickSortIterativo.quickSortIterativo();
         vetMerge1.merge1();
         vetMerge2.merge2();
         vetShake.shake();
@@ -727,7 +957,7 @@ public class VetorAlgoritmos
         vetGnome.gnome();
         vetBucket.bucket();
         vetRadix.radix();
-//        vetTim.tim();
+        vetTim.tim();
     }
     
     public static void exibirVetores()
@@ -756,11 +986,20 @@ public class VetorAlgoritmos
         System.out.print("8 - QuickSP:          ");
         vetQuickSP.exibir();
         
+        System.out.print("8(2) - QuickSP It:    ");
+        vetQuickSPIterativo.exibir();
+        
         System.out.print("9 - QuickCP:          ");
         vetQuickCP.exibir();
         
+        System.out.print("9(2) - QuickCP It:    ");
+        vetQuickCPIterativo.exibir();
+        
         System.out.print("10 - QuickSort:       ");
         vetQuickSort.exibir();
+        
+        System.out.print("10(2) - QuickSort It: ");
+        vetQuickSortIterativo.exibir();
         
         System.out.print("12 - Merge1:          ");
         vetMerge1.exibir();
@@ -789,6 +1028,5 @@ public class VetorAlgoritmos
         inserirDadosVetores();
         ordenarVetores();
         exibirVetores();
-        
     }
 }

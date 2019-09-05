@@ -803,5 +803,17 @@ public class ListaEncad {
                 fusao2(aux, esq, meio, dir); 
             } 
         } 
-    } 
+    }
+    
+    
+    public static void main(String[] args)
+    {
+        ListaEncad le = new ListaEncad();
+        
+        for(int i=1023 ; i > -1 ;i--)
+            le.inserirNoFinal(i);
+        
+        le.tim();
+        le.exibir();
+    }
 }
