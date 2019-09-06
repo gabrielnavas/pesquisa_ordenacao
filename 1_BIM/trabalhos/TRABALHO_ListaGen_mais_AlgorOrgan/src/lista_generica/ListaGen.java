@@ -1,63 +1,10 @@
-package listagen;
+package lista_generica;
 
-class NoPilha
-{
-    private NoGen noGen;
-    private NoPilha prox;
-    
-    public NoPilha(NoGen no, NoPilha prox) {
-        this.prox = prox;
-        this.noGen = no;
-    }
 
-    public NoGen getNo() {
-        return noGen;
-    }
-
-    public void setNo(NoGen no) {
-        this.noGen = no;
-    }
-
-    public NoPilha getProx() {
-        return prox;
-    }
-
-    public void setProx(NoPilha prox) {
-        this.prox = prox;
-    }
-}
-
-class Pilha
-{
-    private NoPilha topo;
-
-    public Pilha() {
-        topo = null;
-    }
-    
-    public void push(NoGen no)
-    {
-        NoPilha novo = new NoPilha(no, topo);
-        topo = novo;
-    }
-    
-    public NoGen pop()
-    {
-        NoGen noGen = topo.getNo();
-        topo = topo.getProx();
-        return noGen;
-    }
-    
-    public boolean isEmpty()
-    {
-        return topo == null;
-    }
-    
-    public NoGen topo()
-    {
-        return topo.getNo();
-    }
-}
+/*
+    Aluno: Gabriel Miguel Navas
+    RA: 261741888
+*/
 
 public class ListaGen
 {
@@ -67,46 +14,12 @@ public class ListaGen
         inicio = null;
     }
     
-    public void testarAParada()
+    public void init()
     {
-        char[] ch = {'a', 'a'};
-//       inicio = cons(cons(cons(criat(new char[]{'c','c'}), cons(criat(new char[]{'c','c'}), null)),null), cons(cons(cons(criat(new char[]{'c','c'}), null), null),null));
-//       inicio = cons(criat(new char[]{'a', 'a'}), null);
-        String lista2 = "[aa,[bb,cc],[dd,[ee],ff,gg],hh]";
-        String lista = "[aa,[bb,cc],[dd,[ee,[77,[99]]],ff,gg],hh]";
-        inserirStr2(lista);
+        inicio = null;
     }
     
-    
-//    public void exibirAtomo(listagen * l)
-//    {
-//        pilha * p;
-//        init(&p);
-//        
-//        puhs(&p, l);
-//        while(!isEmpty(p))
-//        {
-//            if(!nula(l))
-//            {
-//                pop(&p, &l);
-//                while(!nula(l) && !atomo(l))
-//                {
-//                    push(&p, l);
-//                    l=head(l);
-//                }
-//                
-//                if(atomo(l))
-//                    printf("%s", l->no.info);
-//            }
-//            
-//            pop(&p, &l);
-//            l=tail(l);
-//            if(!nulo(l))
-//                push(&p, l);
-//        }
-//    }
-    
-    public void inserirStr2(String str)
+    public void inserirStr(String str)
     {
         Pilha p = new Pilha();
         NoGen no;
@@ -200,7 +113,7 @@ public class ListaGen
         exibir(aux);
     }
     
-    public void exibir(NoGen no)
+    private void exibir(NoGen no)
     {
         if(!isNulo(inicio))
         {
@@ -280,12 +193,5 @@ public class ListaGen
     {
         boolean retorno = !isNulo(no) && (no instanceof Info);
         return retorno;
-    }
-    
-    public static void main(String[] args)
-    {
-        ListaGen listaGen = new ListaGen();
-        listaGen.testarAParada();
-        listaGen.exibir();
-    }
+    }    
 }

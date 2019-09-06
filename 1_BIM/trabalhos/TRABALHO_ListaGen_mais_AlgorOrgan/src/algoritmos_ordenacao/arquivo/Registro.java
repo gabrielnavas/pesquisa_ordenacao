@@ -1,17 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package trabalho_listagen_mais_algororgan;
+package algoritmos_ordenacao.arquivo;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/**
- *
- * @author Aluno
- */
+/*
+    Aluno: Gabriel Miguel Navas
+    RA: 261741888
+*/
+
 public class Registro
 {
     public final int tf = 20;//variavel do tipo "final" � constante
@@ -27,6 +23,7 @@ public class Registro
         this.codigo = codigo; //this � variavel de estancia
         this.idade = idade;
         this.tl = Snome.length();
+        
         for (int i = 0; i < Snome.length(); i++)
         {
             nome[i] = Snome.charAt(i);
@@ -51,12 +48,13 @@ public class Registro
             arquivo.writeInt(codigo);
             arquivo.writeInt(idade);
             arquivo.writeInt(tl);
+            
             for (int i = 0; i < tf; i++)
             {
                 arquivo.writeChar(nome[i]);
             }
-        } catch (IOException e)
-        { }
+            
+        } catch (IOException e) { }
     }
 
     public void leDoArq(RandomAccessFile arquivo)
@@ -66,17 +64,18 @@ public class Registro
             this.codigo = arquivo.readInt();
             this.idade = arquivo.readInt();
             this.tl = arquivo.readInt();
+            
             for (int i = 0; i < this.tf; i++)
                 this.nome[i] = arquivo.readChar();
+            
             for (int i = tl; i < tf; i++)
                 this.nome[i] = ' ';
-        } catch (IOException e)
-        { }
+        } 
+        catch (IOException e) { }
     }
 
     public void exibirReg()
     {
-        int i;
         System.out.print("codigo....." + this.codigo);
         System.out.print(" nome.......");
         String Snome = new String(nome);

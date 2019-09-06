@@ -1,17 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package trabalho_listagen_mais_algororgan;
+package algoritmos_ordenacao.arquivo;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/**
- *
- * @author Aluno
- */
+/*
+    Aluno: Gabriel Miguel Navas
+    RA: 261741888
+*/
+
 public class ArquivoJava {
     
      private String nomearquivo;
