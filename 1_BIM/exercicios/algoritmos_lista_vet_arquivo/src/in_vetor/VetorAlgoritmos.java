@@ -2,6 +2,9 @@
 
 import Dados.Dados;
 import static java.lang.Math.min;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class Pilha
 {
@@ -73,6 +76,20 @@ class Vetor {
         System.out.println();
     }
     
+    public boolean isOrdenado()
+    {
+        boolean ordenado = true;
+        
+        for(int i=0 ; i+1 < tl && ordenado ; )
+        {
+            if(vet[i] > vet[i+1])
+                ordenado = false;
+            else
+                i++;
+        }
+        
+        return ordenado;
+    }
     
     // -- METODOS ORDENACAO -- //
     
@@ -639,7 +656,6 @@ class Vetor {
     {
         int dist, aux;
         boolean troca;
-//        NoLista no1, no2;
             
         troca=true;
         dist = tl;
@@ -679,43 +695,43 @@ class Vetor {
                 vet[i+1] = aux;
                 
                 if(i > 0)
-                {
                     i = i-2;
-                }
             }
         }
     }
     
-    ///////////////////////////////////BUGGG
+    
     public void bucket()
     {
-        int tl = Dados.TL_GERAL,
-                hash;
+        final int GRUPOS = 5;
+        
+        int tl = Dados.TL_GERAL, hash, maior, baldes;
         int[] bucket;
-        Vetor[] buckets = new Vetor[tl];
+        
+        maior = getMaior();
+        baldes = (maior/GRUPOS) + 1;
+        
+        Vetor[] buckets = new Vetor[baldes];
 
+        
         // iniciar buckets
-        for(int i=0 ; i < tl ; i++)
+        for(int i=0 ; i < baldes ; i++)
             buckets[i] = new Vetor();
         
         
         // distruibuir valores os buckets
         for(int i=0 ; i < tl ; i++)
         {
-//            hash = ( (int) (vet[i] * tl) );
-            hash = hashBucket(vet[i]);
+            hash = vet[i]/baldes;
             buckets[hash].inserirFinal(vet[i]);
         }
         
         // ordenar os valores de cada bucket
-        for(int i=0 ; i < tl ; i++)
-        {
+        for(int i=0 ; i < baldes ; i++)
             buckets[i].insercaoDireta();
-//            buckets[i].exibir();
-        }
         
         //pegar os valores ordenados dos buckets
-        for(int i=0, k=0 ; i < 5 ; i++)
+        for(int i=0, k=0 ; i < baldes ; i++)
         {
             bucket = buckets[i].getVet();
             
@@ -724,10 +740,14 @@ class Vetor {
         }    
     }
     
-    public int hashBucket(int x)
-    {   
-        return (x >= 10) ? 
-                ((int) x/ 100) : 0;
+    
+    public int getMaior()
+    {
+        int maior = vet[0];
+        for(int i = 1; i < tl; i++)
+            if(vet[i] > maior)
+                maior = vet[i];
+        return maior;
     }
     
     public void counting()
@@ -736,25 +756,26 @@ class Vetor {
         int[] vetFreq;
         int[] vetSaida;
 
-        maior = vet[0];
-        for(int i = 1; i < tl; i++)
-            if(vet[i] > maior)
-                maior = vet[i];
+        maior = getMaior();
         
-        vetFreq = new int[maior];
+        //gerar frequencias
+        vetFreq = new int[maior+1];
         for(int i = 0; i < tl; i++)
-            vetFreq[vet[i]-1] ++;
+            vetFreq[vet[i]] ++;
         
+        //gerar aumuluativa
         for(int i = 1; i < maior; i++)
             vetFreq[i] += vetFreq[i-1];
         
+        //jogar na auxiliar
         vetSaida = new int[tl];
-        for(int i = 0; i < tl; i++)
+        for(int i = vetSaida.length - 1; i >= 0; i--)
         {
-            vetSaida[ vetFreq[ vet[i-1] -1 ] ] = vet[i];
-            vetFreq[ vet[i-1] ]--;
+            vetSaida[ vetFreq[vet[i]] -1] = vet[i];  
+            --vetFreq[ vet[i] ];
         }
         
+        //joga de volta no vetor
         for(int i = 0; i < tl; i++)
             vet[i] = vetSaida[i];
     }
@@ -762,37 +783,35 @@ class Vetor {
     
     public void radix() 
     {
-	int[] b;
-	int maior = vet[0];
-	int exp = 1;
+	int maior, exp = 1;
 
-	b = new int[vet.length];
+	int[] vetAux = new int[vet.length];
 
-	for (int i = 0; i < vet.length; i++) {
-            if (vet[i] > maior)
-                    maior = vet[i];
-	}
+	maior = getMaior();
         
 	while (maior/exp > 0) 
         {
-		int[] freq = new int[10];
-                
-		for (int i = 0; i < vet.length; i++)
-			freq[(vet[i] / exp) % 10]++;
+            //deixei dentro do laco pra nao precisar ficar iniciando todoso com 0 todo loop
+            int[] freq = new int[10]; 
+            
+            for (int i = 0; i < vet.length; i++)
+                    freq[(vet[i] / exp) % 10]++;
 
-		for (int i = 1; i < 10; i++)
-			freq[i] += freq[i - 1];
+            for (int i = 1; i < 10; i++)
+                    freq[i] += freq[i - 1];
 
-		for (int i = vet.length - 1; i >= 0; i--)
-			b[--freq[(vet[i] / exp) % 10]] = vet[i];
+            for (int i = vet.length - 1; i >= 0; i--)
+                    vetAux[ --freq[(vet[i] / exp) % 10]] = vet[i];
 
-		for (int i = 0; i < vet.length; i++)
-			vet[i] = b[i];
+            for (int i = 0; i < vet.length; i++)
+                    vet[i] = vetAux[i];
 
-		exp *= 10;
+            exp *= 10;
 	}
     }
     
+    
+    // TIM
     public void insercao_direta_tim (int ini, int fim)
     {
         int i, pos, num;
@@ -811,26 +830,6 @@ class Vetor {
             
             vet[pos] = num;
             i++;
-        }
-    }
-    
-    public void merge_tim(int esq, int meio, int dir)
-    {
-        int[] aux = new int[tl];
-        
-        merge_tim(aux, esq, meio, dir);
-    }
-    
-    public void merge_tim(int[] aux, int esq, int meio, int dir)
-    {
-//        int meio;
-        
-        if(esq < dir)
-        {
-//            meio = (esq+dir)/2;
-            merge2(aux, esq, meio);
-            merge2(aux, meio+1, dir);
-            fusao(aux, esq, meio, dir);
         }
     }
     
@@ -859,28 +858,33 @@ class Vetor {
     public void tim() 
     { 
         int run = 32, meio, dir, esq;
+        int[] vetAux;
         
-        if(tl <= 32)
+        if(tl <= 32) //caso for menor ou igual a 32 faz o insercaoDireta normal
             insercaoDireta();
-        else
+        else //caso nao ordena a cada 32 enderecos
             for (int i = 0; i < tl; i += run) 
-                insercao_direta_tim(i, min( i+run-1, tl-1) );
-//        exibir();
-        
-
-        for (int size = run; size < tl; size = 2*size)
-        {
-            for (esq = 0; esq < tl; esq += 2*size) 
-            { 
-                meio = esq + size - 1; 
-                dir = min( esq + 2*size - 1, tl-1); 
-
-                int[] aux = new int[dir+1];
+            {
+                dir = i; //0+32+62+128...
+                esq = min( i+run-1, tl-1); //pode ser o run normal ou tl-1, as vezes no final nao cabe o run todo
                 
-                fusao(aux, esq, meio, dir); 
+                insercao_direta_tim(dir, esq);
+            }
+        
+        for (int run2 = run; run2 < tl; run2 = 2*run2)
+        {
+            for (esq = 0; esq < tl; esq += 2*run2) 
+            { 
+                meio = esq + run2 - 1; 
+                dir = min( esq + 2*run2 - 1, tl-1); //direita é duas vezes maior que a esquerda pra da o range todo
+
+                vetAux = new int[dir+1]; // precisa desse tamanho exato, pois o dir vira TL
+                
+                fusao(vetAux, esq, meio, dir); 
             }
         }
     }
+    //fim TIM
 }
 
 
@@ -904,6 +908,7 @@ public class VetorAlgoritmos
     static Vetor vetMerge1 = new Vetor();
     static Vetor vetMerge2 = new Vetor();
     static Vetor vetComb = new Vetor();
+    static Vetor vetCounting = new Vetor();
     static Vetor vetGnome = new Vetor();
     static Vetor vetBucket = new Vetor();
     static Vetor vetRadix = new Vetor();
@@ -926,9 +931,10 @@ public class VetorAlgoritmos
             vetQuickCPIterativo.inserirFinal(dados[i]);
             vetQuickSort.inserirFinal(dados[i]);
             vetQuickSortIterativo.inserirFinal(dados[i]);
-//            vetMerge1.inserirFinal(dados[i]);
+            vetMerge1.inserirFinal(dados[i]);
             vetMerge2.inserirFinal(dados[i]);
             vetComb.inserirFinal(dados[i]);
+            vetCounting.inserirFinal(dados[i]);
             vetGnome.inserirFinal(dados[i]);
             vetBucket.inserirFinal(dados[i]);
             vetRadix.inserirFinal(dados[i]);
@@ -954,6 +960,7 @@ public class VetorAlgoritmos
         vetMerge2.merge2();
         vetShake.shake();
         vetComb.comb();
+        vetCounting.counting();
         vetGnome.gnome();
         vetBucket.bucket();
         vetRadix.radix();
@@ -962,71 +969,87 @@ public class VetorAlgoritmos
     
     public static void exibirVetores()
     {
-        System.out.print("1 - Insercao Direta:  ");
+        System.out.print("1-Insercao Direta "+ vetInsercaoDireta.isOrdenado() +" : ");
         vetInsercaoDireta.exibir();
         
-        System.out.print("2 - Insercao Binária: ");
+        System.out.print("2-Insercao Binária "+vetInsercaoBinaria.isOrdenado()+": ");
         vetInsercaoBinaria.exibir();
         
-        System.out.print("3 - Seleção Direta:   ");
+        System.out.print("3-Seleção Direta "+vetSelecaoDireta.isOrdenado()+":   ");
         vetSelecaoDireta.exibir();
         
-        System.out.print("4 - Bolha:            ");
+        System.out.print("4-Bolha "+vetBolha.isOrdenado()+":            ");
         vetBolha.exibir();
         
-        System.out.print("5 - Shake:            ");
+        System.out.print("5-Shake "+vetShake.isOrdenado()+":            ");
         vetShake.exibir();
         
-        System.out.print("6 - Shell:            ");
+        System.out.print("6-Shell "+vetShell.isOrdenado()+":            ");
         vetShell.exibir();
         
-        System.out.print("7 - Heap:             ");
+        System.out.print("7-Heap "+vetHeap.isOrdenado()+":             ");
         vetHeap.exibir();
         
-        System.out.print("8 - QuickSP:          ");
+        System.out.print("8-QuickSP "+vetQuickSP.isOrdenado()+":          ");
         vetQuickSP.exibir();
         
-        System.out.print("8(2) - QuickSP It:    ");
+        System.out.print("8(2)-QuickSP It "+vetQuickSPIterativo.isOrdenado()+":    ");
         vetQuickSPIterativo.exibir();
         
-        System.out.print("9 - QuickCP:          ");
+        System.out.print("9-QuickCP "+vetQuickCP.isOrdenado()+":          ");
         vetQuickCP.exibir();
         
-        System.out.print("9(2) - QuickCP It:    ");
+        System.out.print("9(2)-QuickCP It "+vetQuickCPIterativo.isOrdenado()+":    ");
         vetQuickCPIterativo.exibir();
         
-        System.out.print("10 - QuickSort:       ");
+        System.out.print("10-QuickSort "+vetQuickSort.isOrdenado()+":       ");
         vetQuickSort.exibir();
         
-        System.out.print("10(2) - QuickSort It: ");
+        System.out.print("10(2)-QuickSort It "+vetQuickSortIterativo.isOrdenado()+": ");
         vetQuickSortIterativo.exibir();
         
-        System.out.print("12 - Merge1:          ");
+        System.out.print("12-Merge1 "+vetMerge1.isOrdenado()+":          ");
         vetMerge1.exibir();
         
-        System.out.print("13 - Merge2:          ");
+        System.out.print("13-Merge2 "+vetMerge2.isOrdenado()+":          ");
         vetMerge2.exibir();
         
-        System.out.print("14 - Comb:            ");
+        System.out.print("14-Comb "+vetComb.isOrdenado()+":            ");
         vetComb.exibir();
         
-        System.out.print("15 - Gnome:           ");
+        System.out.print("15-Counting "+vetCounting.isOrdenado()+":        ");
+        vetCounting.exibir();
+        
+        System.out.print("16-Gnome "+vetGnome.isOrdenado()+":           ");
         vetGnome.exibir();
         
-        System.out.print("16 - Bucket:          ");
+        System.out.print("17-Bucket "+vetBucket.isOrdenado()+":          ");
         vetBucket.exibir();
         
-        System.out.print("17 - Radix :          ");
+        System.out.print("18-Radix "+vetRadix.isOrdenado()+":           ");
         vetRadix.exibir();
         
-        System.out.print("18 - Tim:             ");
+        System.out.print("19-Tim "+vetTim.isOrdenado()+":             ");
         vetTim.exibir();
     }
     
     public static void main(String[] args)
     {
-        inserirDadosVetores();
-        ordenarVetores();
-        exibirVetores();
+//        inserirDadosVetores();
+//        ordenarVetores();
+//        exibirVetores();
+        
+        List l = new ArrayList();
+        
+        for(int i=0 ; i < 100 ; i++)
+            l.add(i);
+        
+        Collections.shuffle(l);
+        
+        for(int i=1 ; i < l.size() ; i++)
+            if(l.get(i) == l.get(0))
+                break;
+            else
+            System.out.print(" "+ l.get(i));
     }
 }

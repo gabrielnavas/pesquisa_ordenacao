@@ -2,8 +2,8 @@ package Dados;
 
 public class Dados {
     
-    private static int range_inicio = 0;
-    private static int range_fim = 1024;
+    private static int range_inicio = 1;
+    private static int range_fim = 1023;
     
 //    public static int TL_GERAL =  39;
     public static int TL_GERAL =   Math.abs(range_inicio) + Math.abs(range_fim);
