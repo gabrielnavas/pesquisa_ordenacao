@@ -1079,9 +1079,25 @@ public class VetorAlgoritmos
     
     public static void main(String[] args)
     {
-        inserirDadosVetores();
-        ordenarVetores();
-        exibirVetores();
+//        inserirDadosVetores();
+//        ordenarVetores();
+//        exibirVetores();
+        
+        char[] algoritmoName = new char[20];
+        for(int i=0 ; i < algoritmoName.length ; i++)
+            algoritmoName[i] = ' ';
+        
+        String algoritmo = "gabriel";
+        
+        for(int i=0 ; i < algoritmo.length() ; i++)
+            algoritmoName[i] = algoritmo.charAt(i);
+        
+        algoritmo = String.copyValueOf(algoritmoName);
+        
+        System.out.println(algoritmo+": "+algoritmo.length());
+            
+        
+        
         
 //        List l = new ArrayList();
 //        
@@ -1107,5 +1123,7 @@ public class VetorAlgoritmos
 //
 //                            }
 //            catch(Exception ex) {}
+
+    
     }
 }

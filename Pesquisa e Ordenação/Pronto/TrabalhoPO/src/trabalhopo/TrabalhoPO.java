@@ -58,7 +58,26 @@ public class TrabalhoPO {
         compRand=auxRand.getComp();
         movRand=auxRand.getMov();    
         
-        gravaLinhaTabela(compO, calculaCompInsDir(arqOrd.filesize(),1), movO, calculaMovInsDir(arqOrd.filesize(), 1), ttotalO, compRev, calculaCompInsDir(arqRev.filesize(),2), movRev, calculaMovInsDir(arqRev.filesize(),2), ttotalRev, compRand, calculaCompInsDir(arqRand.filesize(),3), movRand, calculaMovInsDir(arqRand.filesize(),3), ttotalRand, "Insercao Direta");//tempo execução no arquivo Ordenado já convertido para segundos  
+        gravaLinhaTabela(
+                compO, 
+                calculaCompInsDir(arqOrd.filesize(),1), 
+                movO, 
+                calculaMovInsDir(arqOrd.filesize(), 1), 
+                ttotalO, 
+                
+                compRev, 
+                calculaCompInsDir(arqRev.filesize(),2), 
+                movRev, 
+                calculaMovInsDir(arqRev.filesize(),2), 
+                ttotalRev, 
+                
+                compRand, 
+                calculaCompInsDir(arqRand.filesize(),3), 
+                movRand, 
+                calculaMovInsDir(arqRand.filesize(),3), 
+                ttotalRand, "Insercao Direta"
+        );
+//tempo execução no arquivo Ordenado já convertido para segundos  
         
         
         //Insercao Binaria
@@ -513,7 +532,9 @@ public class TrabalhoPO {
         compRand=auxRand.getComp();
         movRand=auxRand.getMov();    
         
-        gravaLinhaTabela(compO, "0.00", movO, "0.00", ttotalO, compRev, "0.00", movRev, "0.00", ttotalRev, compRand, "0.00", movRand, "0.00", ttotalRand, "Radix");//tempo execução no arquivo Ordenado já convertido para segundos  
+        gravaLinhaTabela(compO, "0.00", movO, "0.00", ttotalO, compRev, 
+                "0.00", movRev, "0.00", ttotalRev, compRand, "0.00", 
+                movRand, "0.00", ttotalRand, "Radix");//tempo execução no arquivo Ordenado já convertido para segundos  
         
         
         //Comb

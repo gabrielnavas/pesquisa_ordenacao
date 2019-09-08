@@ -8,7 +8,7 @@ package algoritmos_ordenacao.arquivo.lista;
 public class ListaDupla 
 {
     private No inicio;
-        private No fim;
+    private No fim;
 
     public ListaDupla()
     {

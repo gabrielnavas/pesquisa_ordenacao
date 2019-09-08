@@ -10,6 +10,7 @@ public class Registro {
 
     public Registro()
     {
+        
     }
 
     public Registro(int numero)

@@ -3,6 +3,9 @@ package algoritmos_ordenacao.arquivo;
 import algoritmos_ordenacao.arquivo.lista.ListaDupla;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lista_generica.No;
@@ -12,150 +15,29 @@ import lista_generica.No;
     RA: 261741888
 */
 
-class NoReg
-{
-    private int cod;
-    private String nome;
-    private int idade;
-
-    private NoReg prox;
-    private NoReg ant;
-    
-    public NoReg() { }
-    
-    public NoReg(int cod, String nome, int idade, NoReg ant, NoReg prox) {
-        this.cod = cod;
-        this.nome = nome;
-        this.idade = idade;
-        this.ant = ant;
-        this.prox = prox;
-    }
-
-    public int getCod() {
-        return cod;
-    }
-
-    public void setCod(int cod) {
-        this.cod = cod;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public int getIdade() {
-        return idade;
-    }
-
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
-
-    public NoReg getProx() {
-        return prox;
-    }
-
-    public void setProx(NoReg prox) {
-        this.prox = prox;
-    }
-
-    public NoReg getAnt() {
-        return ant;
-    }
-
-    public void setAnt(NoReg ant) {
-        this.ant = ant;
-    }
-}
-
-class ListaDuplaReg
-{
-    private NoReg inicio;
-    private NoReg fim;
-    
-    public ListaDuplaReg()
-    {
-        inicio=null;
-        fim = null;
-    }
-    
-    public void inserirFinal(int cod, String nome, int idade)
-    {
-        NoReg novo = new NoReg(cod, nome, idade, fim, null);
-        
-        if(fim == null)
-            inicio = fim = novo;
-        else
-        {
-            novo.setProx(novo);
-            fim = novo;
-        }
-    }
-    
-    public int getTl()
-    {
-        int cont = 0;
-        NoReg no = inicio;
-        
-        while(no != null)
-        {
-            cont++;
-            no = no.getProx();
-        }
-        
-        return cont;
-    }
-    
-    public void insercaoDireta()
-    {
-        NoReg noI = inicio.getProx(), noAux;
-        String auxStr;
-        int auxCod, auxIdade;
-        int pos;
-        int tl = getTl();
-        
-        for(int i=1 ; i < tl ; i++)
-        {
-            auxStr = noI.getNome().toString();
-            auxCod = noI.getCod();
-            auxIdade = noI.getIdade();
-            noAux = noI;
-            
-            pos = i;
-            while(pos > 0 && noAux.getAnt().getCod() > noAux.getCod())
-            {
-                noAux.setNome(noAux.getAnt().getNome());
-                noAux.setIdade(noAux.getAnt().getIdade());
-                noAux.setCod(noAux.getAnt().getCod());
-                
-                noAux = noAux.getAnt();
-            }
-            
-            noAux.setCod(auxCod);
-            noAux.setIdade(auxIdade);
-            noAux.setNome(auxStr);
-        }
-    }
-}
-
-
 public class Arquivo {
     
     private String nomearquivo;
     private RandomAccessFile arquivo;
-    private int comp, mov;
+    
+    private int comp;
+    private int mov;
+    
+    private static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 50;
+//    private static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 1024;
 
-    public Arquivo(String nomearquivo)
+    public Arquivo(String nomeArquivo)
     {
+        this.nomearquivo = nomeArquivo;
+        
+        this.comp=0;
+        this.comp=0;
+        
         try
         {
-            arquivo = new RandomAccessFile(nomearquivo, "rw");
-        } catch (IOException e)
-        { }
+            arquivo = new RandomAccessFile(nomeArquivo, "rw");
+        } 
+        catch (IOException e) { }
     }
 
     public void copiaArquivo(RandomAccessFile arquivoOrigem) 
@@ -173,7 +55,6 @@ public class Arquivo {
         catch (IOException ex) 
         {
             tamanhoArquivoOrigem=0;
-            Logger.getLogger(Arquivo.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         for(int i = 0 ; i < tamanhoArquivoOrigem ; i++)
@@ -193,7 +74,8 @@ public class Arquivo {
         try
         {
             arquivo.setLength(pos * Registro.length());
-        } catch (IOException ex)
+        } 
+        catch (IOException ex)
         { }
     }
 
@@ -202,12 +84,15 @@ public class Arquivo {
     public boolean eof()  
     {
         boolean retorno = false;
+        
         try
         {
             if (arquivo.getFilePointer() == arquivo.length())
                 retorno = true;                               
-        } catch (IOException e)
+        } 
+        catch (IOException e)
         { }
+        
         return (retorno);
     }
 
@@ -234,29 +119,29 @@ public class Arquivo {
         return registros;
     }
 
-    public void exibirArq()
-    {
-        int i;
-        Registro aux = new Registro();
-        seekArq(0);
-        i = 0;
-        while (!this.eof())
-        {
-            System.out.println("Posicao " + i);
-            aux.leDoArq(arquivo);
-            aux.exibirReg();
-            i++;
-        }
-    }
-
-    public void exibirUmRegistro(int pos)
-    {
-        Registro aux = new Registro();
-        seekArq(pos);
-        System.out.println("Posicao " + pos);
-        aux.leDoArq(arquivo);
-        aux.exibirReg();
-    }
+//    public void exibirArq()
+//    {
+//        int i;
+//        Registro aux = new Registro();
+//        seekArq(0);
+//        i = 0;
+//        while (!this.eof())
+//        {
+//            System.out.println("Posicao " + i);
+//            aux.leDoArq(arquivo);
+//            aux.exibirReg();
+//            i++;
+//        }
+//    }
+//
+//    public void exibirUmRegistro(int pos)
+//    {
+//        Registro aux = new Registro();
+//        seekArq(pos);
+//        System.out.println("Posicao " + pos);
+//        aux.leDoArq(arquivo);
+//        aux.exibirReg();
+//    }
 
     public void seekArq(int pos)
     {
@@ -269,14 +154,14 @@ public class Arquivo {
 
     public void leArq()
     {
-        int codigo, idade;
-        String nome;
+        int codigo; //, idade;
+//        String nome;
         codigo = Entrada.leInteger("Digite o c�digo");
         while (codigo != 0)
         {
-            nome = Entrada.leString("Digite o nome");
-            idade = Entrada.leInteger("Digite a idade");
-            inserirRegNoFinal(new Registro(codigo, nome, idade));
+//            nome = Entrada.leString("Digite o nome");
+//            idade = Entrada.leInteger("Digite a idade");
+            inserirRegNoFinal(new Registro(codigo));
             codigo = Entrada.leInteger("Digite o c�digo");
         }
     }
@@ -290,23 +175,82 @@ public class Arquivo {
         seekArq(0);
         reg.leDoArq(arquivo);
         
-        maior = reg.getCodigo();
+        maior = reg.getNumero();
         
         while(!eof())
         {
             reg.leDoArq(arquivo);
-            if(reg.getCodigo() > maior)
-                maior = reg.getCodigo();
+            if(reg.getNumero() > maior)
+                maior = reg.getNumero();
         }
         
         return maior;
     }
     
 
-    public void initComp() { }
-    public void initMov() { }
-    public int getComp() { return 0; }
-    public int getMov() { return 0; }
+    public void initComp() 
+    {
+        this.comp = 0;
+    }
+    
+    public void initMov() 
+    {
+        this.mov = 0;
+    }
+    
+    public int getComp() 
+    { 
+        return this.comp; 
+    }
+    
+    public int getMov() 
+    { 
+        return this.mov; 
+    }
+    
+    public void geraArquivoOrdenado() 
+    {
+        Registro regI = new Registro();
+        seekArq(0);
+        
+        for(int i=1 ; i <= Arquivo.QUANTIDADE_TOTAL_REG_ARQUIVO ; i++)
+        {
+            regI.setNumero(i);
+            regI.gravaNoArq(arquivo);
+        }
+    }
+    
+    public void geraArquivoReverso() 
+    {
+        Registro regI = new Registro();
+        seekArq(0);
+        
+        for(int i=Arquivo.QUANTIDADE_TOTAL_REG_ARQUIVO ; i > 0 ; i++)
+        {
+            regI.setNumero(i);
+            regI.gravaNoArq(arquivo);
+        }
+    }
+    
+    public void geraArquivoRandomico() 
+    {
+        List listaInt = new ArrayList();
+        Registro regI = new Registro();
+        
+        for(int i=1 ; i <= Arquivo.QUANTIDADE_TOTAL_REG_ARQUIVO ; i++)
+            listaInt.add(i);
+        
+        //fantástico isso daqui, rsrs
+        Collections.shuffle(listaInt);
+        
+        seekArq(0);
+        
+        for(int i=Arquivo.QUANTIDADE_TOTAL_REG_ARQUIVO ; i > 0 ; i++)
+        {
+            regI.setNumero((int) listaInt.get(i));
+            regI.gravaNoArq(arquivo);
+        }
+    }
     
     //.............................................................................
     /*
@@ -339,6 +283,16 @@ public class Arquivo {
         
     }
     
+    public void shell()
+    {
+        
+    }
+    
+    public void heap()
+    {
+        
+    }
+    
     public void quickCP()
     {
         
@@ -359,141 +313,151 @@ public class Arquivo {
         
     }
     
-    public void counting()
-    {
-        int maior, tl;
-        int[] vetAux;
-        
-        //pega maior valor
-        maior = getMaior();
-        
-        tl = fileSize();
-        
-        Registro[] vetSaida = new Registro[tl];
-        Registro regI = new Registro();
-        
-        //vetor auxiliar
-        vetAux = new int[maior+1];
-        
-        //pegar frequencia
-        seekArq(0);
-        for(int i=0 ; i < tl ; i++)
-        {
-            regI.leDoArq(arquivo);
-            vetAux[regI.getCodigo()]++;
-        }
-        
-        //montar acumulativa
-        for(int i=1 ; i < vetAux.length ; i++)
-            vetAux[i] = vetAux[i-1];
-        
-        //gerar vetor ordenado ja
-        seekArq(0);
-        for(int i=0 ; i < tl ; i++)
-        {
-            regI.leDoArq(arquivo);
-            vetSaida[ --vetAux[ regI.getCodigo() ]] = regI.getClone();
-        }
-        
-        
-        //devolver pro arquivo
-        seekArq(0);
-        for(int i=0 ; i < tl ; i++)
-        {
-            regI = vetSaida[i];
-            regI.gravaNoArq(arquivo);
-        }
-        
-    } 
+//    public void counting()
+//    {
+//        int maior, tl;
+//        int[] vetAux;
+//        
+//        //pega maior valor
+//        maior = getMaior();
+//        
+//        tl = fileSize();
+//        
+//        Registro[] vetSaida = new Registro[tl];
+//        Registro regI = new Registro();
+//        
+//        //vetor auxiliar
+//        vetAux = new int[maior+1];
+//        
+//        //pegar frequencia
+//        seekArq(0);
+//        for(int i=0 ; i < tl ; i++)
+//        {
+//            regI.leDoArq(arquivo);
+//            vetAux[regI.getCodigo()]++;
+//        }
+//        
+//        //montar acumulativa
+//        for(int i=1 ; i < vetAux.length ; i++)
+//            vetAux[i] = vetAux[i-1];
+//        
+//        //gerar vetor ordenado ja
+//        seekArq(0);
+//        for(int i=0 ; i < tl ; i++)
+//        {
+//            regI.leDoArq(arquivo);
+//            vetSaida[ --vetAux[ regI.getCodigo() ]] = regI.getClone();
+//        }
+//        
+//        
+//        //devolver pro arquivo
+//        seekArq(0);
+//        for(int i=0 ; i < tl ; i++)
+//        {
+//            regI = vetSaida[i];
+//            regI.gravaNoArq(arquivo);
+//        }
+//        
+//    } 
     
-    public void bucket()
+//    public void bucket()
+//    {
+//        Registro regI = new Registro();
+//        Arquivo arqJava;
+//        
+//        int tl = fileSize();
+//        
+//        //pega maior valor
+//        int maior = getMaior(), hash;
+//        
+//        //definir quantidade de baldes
+//        int baldes = maior/5;
+//        
+//        //definir os baldes
+//        Arquivo[] bucket = new Arquivo[ baldes+1 ];
+//        
+//        //iniciar os baldes
+//        for(int i=0 ; i < bucket.length ; i++)
+//            bucket[i] = new Arquivo("arquivo"+i);
+//        
+//        
+//        //filtrar dados no baldes
+//        seekArq(0);
+//        for(int i=0 ; i < tl ; i++)
+//        {
+//            regI.leDoArq(arquivo);
+//            hash = regI.getCodigo()/baldes;
+//            bucket[hash].inserirRegNoFinal(regI);
+//        }
+//        
+//        //ordenar os buckets
+//        for(int i=0 ; i < bucket.length ; i++)
+//            bucket[i].insercaoDireta();
+//        
+//        //gravar de volta passando por todos os buckets
+//        for(int i=0 ; i < bucket.length ; i++)
+//        {
+//            arqJava = bucket[i];
+//            
+//        }
+//    }
+    
+//    public void radix()
+//    {
+//        int maior, exp, tl;
+//        int[] vetAux;
+//        Registro[] vetSaida;
+//        
+//        Registro regI = new Registro();
+//        tl = fileSize();
+//        vetSaida = new Registro[tl];
+//
+//        maior = getMaior();
+//        exp=1;
+//        while(maior/exp > 0)
+//        {
+//            vetAux = new int[10];
+//            
+//            //pega frequencia
+//            seekArq(0);
+//            for(int i=0 ; i < tl ; i++)
+//            {
+//                regI.leDoArq(arquivo);
+//                vetAux[ (regI.getCodigo()/exp) % 10 ]++;
+//            }
+//            
+//            //gera acumulativa da frequencia
+//            for(int i=1 ; i < 10 ; i++)
+//                vetAux[i] = vetAux[i-1];
+//            
+//            //gera o vetor ordenado
+//            seekArq(0);
+//            for(int i=0 ; i < tl ; i++)
+//            {
+//                regI.leDoArq(arquivo);
+//                vetSaida[ --vetAux[ (regI.getCodigo()/exp) % 10 ]] = regI.getClone(); 
+//            }
+//            
+//            seekArq(0);
+//            for(int i=0 ; i < tl ; i++)
+//            {
+//                regI = vetSaida[i];
+//                regI.gravaNoArq(arquivo);
+//            }
+//        }
+//    }
+    
+    public void gnome()
     {
-        Registro regI = new Registro();
-        Arquivo arqJava;
         
-        int tl = fileSize();
-        
-        //pega maior valor
-        int maior = getMaior(), hash;
-        
-        //definir quantidade de baldes
-        int baldes = maior/5;
-        
-        //definir os baldes
-        Arquivo[] bucket = new Arquivo[ baldes+1 ];
-        
-        //iniciar os baldes
-        for(int i=0 ; i < bucket.length ; i++)
-            bucket[i] = new Arquivo("arquivo"+i);
-        
-        
-        //filtrar dados no baldes
-        seekArq(0);
-        for(int i=0 ; i < tl ; i++)
-        {
-            regI.leDoArq(arquivo);
-            hash = regI.getCodigo()/baldes;
-            bucket[hash].inserirRegNoFinal(regI);
-        }
-        
-        //ordenar os buckets
-        for(int i=0 ; i < bucket.length ; i++)
-            bucket[i].insercaoDireta();
-        
-        //gravar de volta passando por todos os buckets
-        for(int i=0 ; i < bucket.length ; i++)
-        {
-            arqJava = bucket[i];
-            
-        }
     }
     
     public void radix()
     {
-        int maior, exp, tl;
-        int[] vetAux;
-        Registro[] vetSaida;
         
-        Registro regI = new Registro();
-        tl = fileSize();
-        vetSaida = new Registro[tl];
-
-        maior = getMaior();
-        exp=1;
-        while(maior/exp > 0)
-        {
-            vetAux = new int[10];
-            
-            //pega frequencia
-            seekArq(0);
-            for(int i=0 ; i < tl ; i++)
-            {
-                regI.leDoArq(arquivo);
-                vetAux[ (regI.getCodigo()/exp) % 10 ]++;
-            }
-            
-            //gera acumulativa da frequencia
-            for(int i=1 ; i < 10 ; i++)
-                vetAux[i] = vetAux[i-1];
-            
-            //gera o vetor ordenado
-            seekArq(0);
-            for(int i=0 ; i < tl ; i++)
-            {
-                regI.leDoArq(arquivo);
-                vetSaida[ --vetAux[ (regI.getCodigo()/exp) % 10 ]] = regI.getClone(); 
-            }
-            
-            seekArq(0);
-            for(int i=0 ; i < tl ; i++)
-            {
-                regI = vetSaida[i];
-                regI.gravaNoArq(arquivo);
-            }
-        }
     }
     
-    public void gnome()
+    public void bucket()
     {
         
     }
@@ -508,7 +472,5 @@ public class Arquivo {
         
     }
     
-    public void geraArquivoOrdenado() { }
-    public void geraArquivoReverso() { }
-    public void geraArquivoRandomico() { }
+    
 }
