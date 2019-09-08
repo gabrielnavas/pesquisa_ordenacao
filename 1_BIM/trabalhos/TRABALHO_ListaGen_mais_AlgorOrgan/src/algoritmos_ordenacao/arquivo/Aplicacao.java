@@ -9,10 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
-import static utils.UtilApp.AlgoritmoNum;
 import utils.UtilApp.ArquivoParams;
 import utils.UtilApp.TipoOrdenado;
-import utils.UtilApp.ExibirDados;
 
 
 public class Aplicacao 
@@ -27,48 +25,36 @@ public class Aplicacao
             
     public Aplicacao()
     {
-        tabela = new Arquivo("tabela" + new Date().toString()+ ".dat");
+        
     }
     
-    private void gerarDadosArquivos(String nameAlg)
-    {
-        //nao muda o nome, to dando split("|") pra exibir :P
-        arqOrd = new Arquivo(nameAlg  + "| arqOrd.bin");
-        arqRev = new Arquivo(nameAlg  + "| arqRev.bin");
-        arqRand = new Arquivo(nameAlg + "| arqRand.bin");
-        auxRev = new Arquivo(nameAlg  + "| auxRev.bin");
-        auxRand = new Arquivo(nameAlg + "| auxRand.bin");
-        
-        arqOrd.geraArquivoOrdenado();
-        if(ExibirDados.EXIBIR_ARQUIVO) 
-            arqOrd.exibirArq();
-        
-        arqRev.geraArquivoReverso();
-        if(ExibirDados.EXIBIR_ARQUIVO) 
-            arqRev.exibirArq();
-        
-        arqRand.geraArquivoRandomico();
-        if(ExibirDados.EXIBIR_ARQUIVO) 
-            arqRand.exibirArq();
-    }
-    
-    private void deletarArquivos(String nomeAlg)
+    private void deletarArquivos()
     {
         if(ArquivoParams.DELETA_ARQUIVOS_DADOS)
         {
-            arqOrd.close();
-            arqRev.close();
-            arqRand.close();
-            auxRev.close();
-            auxRand.close();
-            
-            //nao muda o nome, to dando split("|") pra exibir :P
-            new File(nomeAlg + "| arqOrd.bin").delete();
-            new File(nomeAlg + "| arqRev.bin").delete();
-            new File(nomeAlg + "| arqRand.bin").delete();
-            new File(nomeAlg + "| arqRev.bin").delete();
-            new File(nomeAlg + "| arqRand.bin").delete();
+            new File("arqOrd.bin").delete();
+            new File("arqRev.bin").delete();
+            new File("arqRand.bin").delete();
+            new File("arqRev.bin").delete();
+            new File("arqRand.bin").delete();
         }
+    }
+    
+    private String tratarNomeAlgoritmo(String algoritmo)
+    {
+        //trata tamanho real da string para o arquivo
+        
+        char[] algoritmoName = new char[20];
+        
+        for(int i=0 ; i < algoritmoName.length ; i++)
+            algoritmoName[i] = ' ';
+        
+        for(int i=0 ; i < algoritmo.length() ; i++)
+            algoritmoName[i] = algoritmo.charAt(i);
+        
+        algoritmo = String.copyValueOf(algoritmoName);
+        
+        return algoritmo;
     }
     
     private void gravaLinhaTabela( String algoritmo,
@@ -78,7 +64,7 @@ public class Aplicacao
     )
     {
         RandomAccessFile tabela = this.tabela.getArquivo();
-        algoritmo = ArquivoParams.gerarStringTamanho(20, algoritmo);
+        algoritmo = tratarNomeAlgoritmo(algoritmo);
         
         try
         {
@@ -292,51 +278,33 @@ public class Aplicacao
         return calculoStr;
     }
     
-    
-    
-    private void linha(String nomeOrd, int algNum)
+    private void gerarTabela()
     {
         int compO, movO,  compRev, movRev, compRand, movRand;
         long ttotal0, ttotalRev, tini, tfim, ttotalO, ttotalRand;
         
-        //gera arquivos;
-        gerarDadosArquivos(nomeOrd);
+        arqOrd = new Arquivo("arqOrd.bin");
+        arqRev = new Arquivo("arqRev.bin");
+        arqRand = new Arquivo("arqRand.bin");
+        auxRev = new Arquivo("arqRev.bin");
+        auxRand = new Arquivo("arqRand.bin");
+        tabela = new Arquivo("tabela" + new Date().toString()+ ".dat");
+        
+        arqOrd.geraArquivoOrdenado();
+        arqRev.geraArquivoReverso();
+        arqRand.geraArquivoRandomico();
         
         //Arquivo Ordenado
         arqOrd.initComp();
         arqOrd.initMov();
         tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
-        
-        switch(algNum)
-        {
-            case AlgoritmoNum.INSERCAO_DIRETA:  arqOrd.insercaoDireta();break;
-            case AlgoritmoNum.INSERCAO_BINARIA: arqOrd.insercaoBinaria(); break;
-            case AlgoritmoNum.SELECAO_DIRETA:   arqOrd.selecaoDireta(); break;
-            case AlgoritmoNum.BOLHA:            arqOrd.bolha(); break;
-            case AlgoritmoNum.SHAKE:            arqOrd.shake(); break;
-            case AlgoritmoNum.SHELL:            arqOrd.shell(); break;
-            case AlgoritmoNum.HEAP:             arqOrd.heap(); break;
-            case AlgoritmoNum.QUICKCP:          arqOrd.quickCP(); break;
-            case AlgoritmoNum.QUICKSP:          arqOrd.quickSP(); break;
-            case AlgoritmoNum.MERGE1:           arqOrd.merge1(); break;
-            case AlgoritmoNum.MERGE2:           arqOrd.merge2(); break;
-            case AlgoritmoNum.COUNTING:         arqOrd.counting(); break;
-            case AlgoritmoNum.BUCKET:           arqOrd.bucket(); break;
-            case AlgoritmoNum.RADIX:            arqOrd.radix(); break;
-            case AlgoritmoNum.COMB:             arqOrd.comb(); break;
-            case AlgoritmoNum.GNOME:            arqOrd.gnome(); break;
-            case AlgoritmoNum.TIM:              arqOrd.tim(); break;
-            
-            default: System.out.println("Algoritmo não existe.");
-        }
-        
+        arqOrd.insercaoDireta();
         tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
         compO = arqOrd.getComp();
         movO = arqOrd.getMov();
         ttotalO = tfim - tini;
         
-        if(ExibirDados.EXIBIR_ARQUIVO) 
-            auxRev.exibirArq();
+            arqOrd.exibirArq();
         
         //Arquivo Reverso
         auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
@@ -344,36 +312,12 @@ public class Aplicacao
         auxRev.initComp();
         auxRev.initMov();
         tini = System.currentTimeMillis();
-        
-        switch(algNum)
-        {
-            case AlgoritmoNum.INSERCAO_DIRETA: auxRev.insercaoDireta();break;
-            case AlgoritmoNum.INSERCAO_BINARIA: auxRev.insercaoBinaria(); break;
-            case AlgoritmoNum.SELECAO_DIRETA: auxRev.selecaoDireta(); break;
-            case AlgoritmoNum.BOLHA: auxRev.bolha(); break;
-            case AlgoritmoNum.SHAKE: auxRev.shake(); break;
-            case AlgoritmoNum.SHELL: auxRev.shell(); break;
-            case AlgoritmoNum.HEAP: auxRev.heap(); break;
-            case AlgoritmoNum.QUICKCP: auxRev.quickCP(); break;
-            case AlgoritmoNum.QUICKSP: auxRev.quickSP(); break;
-            case AlgoritmoNum.MERGE1: auxRev.merge1(); break;
-            case AlgoritmoNum.MERGE2: auxRev.merge2(); break;
-            case AlgoritmoNum.COUNTING: auxRev.counting(); break;
-            case AlgoritmoNum.BUCKET: auxRev.bucket(); break;
-            case AlgoritmoNum.RADIX: auxRev.radix(); break;
-            case AlgoritmoNum.COMB: auxRev.comb(); break;
-            case AlgoritmoNum.GNOME: auxRev.gnome(); break;
-            case AlgoritmoNum.TIM: auxRev.tim(); break;
-            
-            default: System.out.println("Algoritmo não existe.");
-        }
-        
+        auxRev.insercaoDireta();
         tfim = System.currentTimeMillis();
         ttotalRev = tfim - tini;
         compRev = auxRev.getComp();
         movRev = auxRev.getMov();
         
-        if(ExibirDados.EXIBIR_ARQUIVO) 
             auxRev.exibirArq();
         
         //Arquivo Randomico
@@ -382,37 +326,143 @@ public class Aplicacao
         auxRand.initComp();
         auxRand.initMov();
         tini = System.currentTimeMillis();
-        
-        switch(algNum)
-        {
-            case AlgoritmoNum.INSERCAO_DIRETA: auxRand.insercaoDireta();break;
-            case AlgoritmoNum.INSERCAO_BINARIA: auxRand.insercaoBinaria(); break;
-            case AlgoritmoNum.SELECAO_DIRETA: auxRand.selecaoDireta(); break;
-            case AlgoritmoNum.BOLHA: auxRand.bolha(); break;
-            case AlgoritmoNum.SHAKE: auxRand.shake(); break;
-            case AlgoritmoNum.SHELL: auxRand.shell(); break;
-            case AlgoritmoNum.HEAP: auxRand.heap(); break;
-            case AlgoritmoNum.QUICKCP: auxRand.quickCP(); break;
-            case AlgoritmoNum.QUICKSP: auxRand.quickSP(); break;
-            case AlgoritmoNum.MERGE1: auxRand.merge1(); break;
-            case AlgoritmoNum.MERGE2: auxRand.merge2(); break;
-            case AlgoritmoNum.COUNTING: auxRand.counting(); break;
-            case AlgoritmoNum.BUCKET: auxRand.bucket(); break;
-            case AlgoritmoNum.RADIX: auxRand.radix(); break;
-            case AlgoritmoNum.COMB: auxRand.comb(); break;
-            case AlgoritmoNum.GNOME: auxRand.gnome(); break;
-            case AlgoritmoNum.TIM: auxRand.tim(); break;
-            
-            default: System.out.println("Algoritmo não existe.");
-        }
-        
+        auxRand.insercaoDireta();
         tfim = System.currentTimeMillis();
         ttotalRand = tfim - tini;
         compRand = auxRand.getComp();
         movRand = auxRand.getMov();
         
-        if(ExibirDados.EXIBIR_ARQUIVO) 
+            auxRand.exibirArq();
+        
+        gravaLinhaTabela(
+            "Insercao Direta",    
+                
+            compO,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            movO,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            ttotalO,
+            
+            compRev,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            movRev,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            ttotalRev,
+            
+            compRand,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            movRand,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            ttotalRand
+        );            
+
+        
+        
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.insercaoBinaria();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.insercaoBinaria();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
             auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.insercaoBinaria();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        gravaLinhaTabela(
+            "Insercao Binária",    
+                
+            compO,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            movO,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            ttotalO,
+            
+            compRev,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            movRev,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            ttotalRev,
+            
+            compRand,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            movRand,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            ttotalRand
+        );  
+    
+        
+        
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.selecaoDireta();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.selecaoDireta();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.selecaoDireta();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
         
         
         gravaLinhaTabela(
@@ -436,40 +486,935 @@ public class Aplicacao
             calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
             ttotalRand
         );  
+   
         
-        deletarArquivos(nomeOrd);
-    }
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.bolha();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.bolha();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.bolha();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        gravaLinhaTabela(
+            "Bolha",    
+                
+            compO,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            movO,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            ttotalO,
+            
+            compRev,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            movRev,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            ttotalRev,
+            
+            compRand,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            movRand,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            ttotalRand
+        );  
+   
+        
+        
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.shake();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.shake();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.shake();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        gravaLinhaTabela(
+            "Shake",    
+                
+            compO,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            movO,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.ORDENADO),
+            ttotalO,
+            
+            compRev,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            movRev,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.REVERSO),
+            ttotalRev,
+            
+            compRand,
+            calculaCompInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            movRand,
+            calculaMovInsDir(arqOrd.fileSize(), TipoOrdenado.RANDOMICO),
+            ttotalRand
+        );  
     
-    public void geraTabela()
-    {
-        String[] algoritmosNames = new String[]{
-            "Inserção Direta", 
-            "Inserção Binária", 
-            "Seleção Direta",
-            "Bolha", 
-            "Shake", 
-            "Shell", 
-            "Heap", 
-            "Quick s/ Pivô", 
-            "Quick c/ Pivô",
-            "Merge 1 com fusão 1",
-            "Merge 2 com fusão 2",
-            "Counting", 
-            "Bucket", 
-            "Radix", 
-            "Comb", 
-            "Gnome", 
-            "Tim"
-        };
         
-        for(int i=0 ; i < algoritmosNames.length ; i++)
-            this.linha(algoritmosNames[i], i);
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.shell();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqRand.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.shell();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.shell();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        gravaLinhaTabela(
+            "Shell",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        );  
+   
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.heap();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.heap();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.heap();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        gravaLinhaTabela(
+            "Heap",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        );  
+   
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.quickCP();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.quickCP();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.quickCP();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        gravaLinhaTabela(
+            "Quick c/ pivô",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        );  
+    
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.quickSP();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.quickSP();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.quickSP();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Quick s/ pivô",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+    
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.merge1();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.merge1();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.merge1();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Merge 1a Implement",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+   
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.merge2();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.merge2();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.merge2();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Merge 2a Implement",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+    
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+//        arqOrd.counting();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+//        auxRev.counting();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+//        auxRand.counting();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Counting",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+    
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.bucket();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.bucket();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.bucket();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Bucket",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+    
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.radix();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.radix();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.radix();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Radix",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+   
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.comb();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.comb();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.comb();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Comb",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.gnome();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.gnome();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.gnome();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Gnome",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
+    
+        
+        //Arquivo Ordenado
+        arqOrd.initComp();
+        arqOrd.initMov();
+        tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        arqOrd.tim();
+        tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
+        compO = arqOrd.getComp();
+        movO = arqOrd.getMov();
+        ttotalO = tfim - tini;
+        
+            arqOrd.exibirArq();
+        
+        
+        //Arquivo Reverso
+        auxRev.copiaArquivo(arqRev.getArquivo()); // faz uma cópia do arquivo de arqRev
+        //para auxRev para preservar o original
+        auxRev.initComp();
+        auxRev.initMov();
+        tini = System.currentTimeMillis();
+        auxRev.tim();
+        tfim = System.currentTimeMillis();
+        ttotalRev = tfim - tini;
+        compRev = auxRev.getComp();
+        movRev = auxRev.getMov();
+        
+            auxRev.exibirArq();
+        
+        
+        //Arquivo Randomico
+        auxRand.copiaArquivo(arqRand.getArquivo()); // faz uma cópia do arquivo de arqRand
+        //para auxRand para preservar o original
+        auxRand.initComp();
+        auxRand.initMov();
+        tini = System.currentTimeMillis();
+        auxRand.tim();
+        tfim = System.currentTimeMillis();
+        ttotalRand = tfim - tini;
+        compRand = auxRand.getComp();
+        movRand = auxRand.getMov();
+        
+            auxRand.exibirArq();
+        
+        
+        
+        gravaLinhaTabela(
+            "Tim",    
+                
+            compO,
+            "0.00",
+            movO,
+            "0.00",
+            ttotalO,
+            
+            compRev,
+            "0.00",
+            movRev,
+            "0.00",
+            ttotalRev,
+            
+            compRand,
+            "0.00",
+            movRand,
+            "0.00",
+            ttotalRand
+        ); 
     }
                 
     public static void main(String[] args)
     {
         Aplicacao p = new Aplicacao();
-        p.geraTabela();
+        p.deletarArquivos();
+        p.gerarTabela();
         p.exibirTabela();
     }
 }

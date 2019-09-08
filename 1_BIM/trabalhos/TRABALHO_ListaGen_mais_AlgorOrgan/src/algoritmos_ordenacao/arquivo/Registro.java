@@ -8,7 +8,7 @@ import java.io.RandomAccessFile;
     RA: 261741888
 */
 
-class Registro
+public class Registro
 {
     public final int tf=1022;
     

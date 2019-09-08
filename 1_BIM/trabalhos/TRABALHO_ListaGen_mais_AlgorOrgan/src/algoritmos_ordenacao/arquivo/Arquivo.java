@@ -149,15 +149,14 @@ public class Arquivo {
     
     public void exibirArq()
     {
-        int i;
         Registro reg = new Registro();
         
+        seekArq(0);
+        
         System.out.print(
-                ArquivoParams.gerarStringTamanho(20, this.nomearquivo.split("|")[0] ) + 
+                ArquivoParams.gerarStringTamanho(20, this.nomearquivo ) + 
                 this.nomearquivo + isOrdenacao() + ": "
         );
-        
-        seekArq(0);
         
         while (!this.eof())
         {
@@ -292,7 +291,7 @@ public class Arquivo {
         for(int i=1 ; i <= ArquivoParams.QUANTIDADE_TOTAL_REG_ARQUIVO ; i++)
             listaInt.add(i);
         
-        //fantástico isso daqui, rsrs
+        
         Collections.shuffle(listaInt);
         
         seekArq(0);
@@ -388,7 +387,7 @@ public class Arquivo {
     
     public void fusao2(Arquivo arqAux, int ini1, int fim1, int ini2, int fim2)
     {
-        int i, j, k;
+        int i, j;
         
         Registro regI = new Registro();
         Registro regJ = new Registro();
@@ -397,7 +396,6 @@ public class Arquivo {
         
         i=ini1;
         j=ini2;
-        k=ini1;
         while(i <= fim1 && j <= fim2)
         {
             seekArq(i);
@@ -697,6 +695,4 @@ public class Arquivo {
         
         new File("arqAux.bin").delete();
     }
-    
-    
 }

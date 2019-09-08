@@ -19,10 +19,6 @@ public class UtilApp {
         public static final int RANDOMICO=2;       
     }
     
-    public static class ExibirDados
-    {
-        public static final boolean EXIBIR_ARQUIVO = true;
-    }
     
     public static class AlgoritmoNum
     {
@@ -48,7 +44,7 @@ public class UtilApp {
     public static class ArquivoParams
     {
         public static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 25;
-        public static final boolean DELETA_ARQUIVOS_DADOS = true;
+        public static final boolean DELETA_ARQUIVOS_DADOS = false;
         
        
         public static String gerarStringTamanho(int tamanho, String algoritmo)
@@ -60,7 +56,7 @@ public class UtilApp {
             for(int i=0 ; i < algoritmoName.length ; i++)
                 algoritmoName[i] = ' ';
 
-            for(int i=0 ; i < algoritmo.length() ; i++)
+            for(int i=0 ; i < algoritmoName.length && i < algoritmo.length() ; i++)
                 algoritmoName[i] = algoritmo.charAt(i);
 
             algoritmo = String.copyValueOf(algoritmoName);
