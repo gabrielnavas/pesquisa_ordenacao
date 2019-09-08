@@ -579,8 +579,10 @@ public class ListaEncad {
                 maior = aux.getInfo();
             aux = aux.getProx();
         }
+        
         //frequencia
         int [] vetor = new int[maior];
+        
         aux = ini;
         for(i = 0; i < total; i++)
         {

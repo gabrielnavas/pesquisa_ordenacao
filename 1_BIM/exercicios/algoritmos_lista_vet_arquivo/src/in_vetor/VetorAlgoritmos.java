@@ -1,10 +1,13 @@
-    package in_vetor;
+package in_vetor;
 
 import Dados.Dados;
 import static java.lang.Math.min;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static javax.management.Query.gt;
+import static javax.management.Query.lt;
 
 class Pilha
 {
@@ -47,7 +50,7 @@ class Vetor {
     
     public Vetor()
     {
-        this.vet = new int[Dados.TL_GERAL];
+        this.vet = new int[1024];
         tl=0;
     }
 
@@ -78,17 +81,10 @@ class Vetor {
     
     public boolean isOrdenado()
     {
-        boolean ordenado = true;
+        int i;
+        for(i=1 ; i < tl && vet[i] > vet[i-1] ; i++);
         
-        for(int i=0 ; i+1 < tl && ordenado ; )
-        {
-            if(vet[i] > vet[i+1])
-                ordenado = false;
-            else
-                i++;
-        }
-        
-        return ordenado;
+        return i == tl;
     }
     
     // -- METODOS ORDENACAO -- //
@@ -597,39 +593,89 @@ class Vetor {
         merge2(aux, 0, tl-1);
     }
     
-    public void merge2(int[] aux, int esq, int dir)
+    public void merge2(int[] aux, int ini, int fim)
     {
         int meio;
         
-        if(esq < dir)
+        if(ini < fim)
         {
-            meio = (esq+dir)/2;
-            merge2(aux, esq, meio);
-            merge2(aux, meio+1, dir);
-            fusao(aux, esq, meio, dir);
+            meio = (ini+fim)/2;
+            merge2(aux, ini, meio);
+            merge2(aux, meio+1, fim);
+            fusao(aux, ini, meio, meio+1, fim);
         }
     }
     
-    public void fusao(int aux[], int ini, int meio, int fim)
+    public void fusao(int aux[], int ini1, int fim1, int ini2, int fim2)
     {
-        int i=ini, 
-            j=meio+1, 
-            k=ini;
+        int i=ini1, 
+            j=ini2, 
+            k=ini1;
         
-        while(i <= meio  && j <= fim)
+        while(i <= fim1  && j <= fim2)
             if(vet[i] < vet[j])
                 aux[k++] = vet[i++];
             else
                 aux[k++] = vet[j++];
             
-        while(i <= meio)
+        while(i <= fim1)
             aux[k++] = vet[i++];
         
-        while(j <= fim)
+        while(j <= fim2)
             aux[k++] = vet[j++];
         
-        for(i=ini ; i <= fim ; i++)
+        for(i=ini1 ; i <= fim2 ; i++)
             vet[i] = aux[i];
+    }
+    
+    public void merge2Iterativo()
+    {
+        int[] aux = new int[tl];
+        
+        int ini, fim, meio;
+        
+        Pilha p = new Pilha(10000);
+        Pilha p2 = new Pilha(10000);
+        
+        ini=0;
+        fim=tl-1;
+        
+        meio = (ini+fim)/2;
+
+        p.push(ini);
+        p.push(fim);
+
+        p2.push(ini);
+        p2.push(fim);
+
+        while( !p.isEmpty() )
+        {
+            fim = p.pop();
+            ini = p.pop();
+            
+            meio = (ini+fim)/2;
+            
+            if(ini < fim)
+            {
+
+                if(ini < meio)
+                {
+                    p.push(ini);
+                    p.push(meio);
+
+                    p2.push(ini);
+                    p2.push(meio);
+                }
+                else
+                {
+                    fim = p2.pop();
+                    ini = p2.pop();
+                    meio = (ini+fim)/2;
+                    
+                    fusao(aux, ini, meio, meio+1, fim);
+                }
+            }
+        }
     }
     
     public void comb_simples()
@@ -705,13 +751,13 @@ class Vetor {
     {
         final int GRUPOS = 5;
         
-        int tl = Dados.TL_GERAL, hash, maior, baldes;
+        int tl = this.vet.length, hash, maior, baldes;
         int[] bucket;
         
         maior = getMaior();
-        baldes = (maior/GRUPOS) + 1;
+        baldes = (maior/GRUPOS);
         
-        Vetor[] buckets = new Vetor[baldes];
+        Vetor[] buckets = new Vetor[baldes+1];
 
         
         // iniciar buckets
@@ -741,6 +787,7 @@ class Vetor {
     }
     
     
+        
     public int getMaior()
     {
         int maior = vet[0];
@@ -753,28 +800,29 @@ class Vetor {
     public void counting()
     {
         int maior;
-        int[] vetFreq;
+        int[] vetAux;
         int[] vetSaida;
 
         maior = getMaior();
         
+        //vetor para montar frequencia/acumulativa
+        vetAux = new int[maior+1];
+        
         //gerar frequencias
-        vetFreq = new int[maior+1];
         for(int i = 0; i < tl; i++)
-            vetFreq[vet[i]] ++;
+            vetAux[vet[i]]++;
         
         //gerar aumuluativa
-        for(int i = 1; i < maior; i++)
-            vetFreq[i] += vetFreq[i-1];
+        for(int i = 1; i < vetAux.length; i++)
+            vetAux[i] += vetAux[i-1];
         
         //jogar na auxiliar
         vetSaida = new int[tl];
-        for(int i = vetSaida.length - 1; i >= 0; i--)
+        for(int i = 0; i  < vetSaida.length ; i++)
         {
-            vetSaida[ vetFreq[vet[i]] -1] = vet[i];  
-            --vetFreq[ vet[i] ];
+            vetSaida[ --vetAux[vet[i]] ] = vet[i];  
+//            vetAux[vet[i]]--;
         }
-        
         //joga de volta no vetor
         for(int i = 0; i < tl; i++)
             vet[i] = vetSaida[i];
@@ -785,26 +833,30 @@ class Vetor {
     {
 	int maior, exp = 1;
 
-	int[] vetAux = new int[vet.length];
+	int[] vetSaida = new int[vet.length];
 
 	maior = getMaior();
         
 	while (maior/exp > 0) 
         {
             //deixei dentro do laco pra nao precisar ficar iniciando todoso com 0 todo loop
-            int[] freq = new int[10]; 
+            int[] vetAux = new int[10]; 
             
+            //gera frequencia
             for (int i = 0; i < vet.length; i++)
-                    freq[(vet[i] / exp) % 10]++;
+                    vetAux[(vet[i] / exp) % 10]++;
 
+            //gera acumulativa
             for (int i = 1; i < 10; i++)
-                    freq[i] += freq[i - 1];
+                    vetAux[i] += vetAux[i - 1];
 
+            
+            //coloca em ordem no vetor
             for (int i = vet.length - 1; i >= 0; i--)
-                    vetAux[ --freq[(vet[i] / exp) % 10]] = vet[i];
+                    vetSaida[ --vetAux[(vet[i] / exp) % 10]] = vet[i];
 
             for (int i = 0; i < vet.length; i++)
-                    vet[i] = vetAux[i];
+                    vet[i] = vetSaida[i];
 
             exp *= 10;
 	}
@@ -833,54 +885,34 @@ class Vetor {
         }
     }
     
-    public void fusao_tim(int aux[], int ini, int meio, int fim)
-    {
-        int i=ini, 
-            j=meio+1, 
-            k=ini;
-        
-        while(i <= meio  && j <= fim)
-            if(vet[i] < vet[j])
-                aux[k++] = vet[i++];
-            else
-                aux[k++] = vet[j++];
-            
-        while(i <= meio)
-            aux[k++] = vet[i++];
-        
-        while(j <= fim)
-            aux[k++] = vet[j++];
-        
-        for(i=ini ; i <= fim ; i++)
-            vet[i] = aux[i];
-    }
-    
     public void tim() 
     { 
-        int run = 32, meio, dir, esq;
+        int run = 32, ini1, ini2, fim1, fim2;
         int[] vetAux;
         
-        if(tl <= 32) //caso for menor ou igual a 32 faz o insercaoDireta normal
+        if(tl < 32) //caso for menor que 32 faz o insercaoDireta normal
             insercaoDireta();
         else //caso nao ordena a cada 32 enderecos
             for (int i = 0; i < tl; i += run) 
             {
-                dir = i; //0+32+62+128...
-                esq = min( i+run-1, tl-1); //pode ser o run normal ou tl-1, as vezes no final nao cabe o run todo
+                ini1 = i; //0+32+62+128...
+                fim1 = min( i+run-1, tl-1); //pode ser o run normal ou tl-1, as vezes no final nao cabe o run todo
                 
-                insercao_direta_tim(dir, esq);
+                insercao_direta_tim(ini1, fim1);
             }
         
         for (int run2 = run; run2 < tl; run2 = 2*run2)
         {
-            for (esq = 0; esq < tl; esq += 2*run2) 
+            for (ini1 = 0; ini1 < tl; ini1 += 2*run2) 
             { 
-                meio = esq + run2 - 1; 
-                dir = min( esq + 2*run2 - 1, tl-1); //direita é duas vezes maior que a esquerda pra da o range todo
-
-                vetAux = new int[dir+1]; // precisa desse tamanho exato, pois o dir vira TL
+                fim1 = ini1 + run2 - 1;
                 
-                fusao(vetAux, esq, meio, dir); 
+                ini2 = fim1+1;
+                fim2 = min( ini1 + 2*run2 - 1, tl-1); 
+                
+                vetAux = new int[fim2+1]; // precisa desse tamanho exato, pois o fim2 vira TL
+                
+                fusao(vetAux, ini1, fim1, ini2, fim2); 
             }
         }
     }
@@ -907,6 +939,7 @@ public class VetorAlgoritmos
     static Vetor vetQuickSortIterativo = new Vetor();
     static Vetor vetMerge1 = new Vetor();
     static Vetor vetMerge2 = new Vetor();
+    static Vetor vetMerge2Iterativo = new Vetor();
     static Vetor vetComb = new Vetor();
     static Vetor vetCounting = new Vetor();
     static Vetor vetGnome = new Vetor();
@@ -933,6 +966,7 @@ public class VetorAlgoritmos
             vetQuickSortIterativo.inserirFinal(dados[i]);
             vetMerge1.inserirFinal(dados[i]);
             vetMerge2.inserirFinal(dados[i]);
+            vetMerge2Iterativo.inserirFinal(dados[i]);
             vetComb.inserirFinal(dados[i]);
             vetCounting.inserirFinal(dados[i]);
             vetGnome.inserirFinal(dados[i]);
@@ -958,6 +992,7 @@ public class VetorAlgoritmos
         vetQuickSortIterativo.quickSortIterativo();
         vetMerge1.merge1();
         vetMerge2.merge2();
+        vetMerge2Iterativo.merge2Iterativo();
         vetShake.shake();
         vetComb.comb();
         vetCounting.counting();
@@ -999,7 +1034,7 @@ public class VetorAlgoritmos
         System.out.print("9-QuickCP "+vetQuickCP.isOrdenado()+":          ");
         vetQuickCP.exibir();
         
-        System.out.print("9(2)-QuickCP It "+vetQuickCPIterativo.isOrdenado()+":    ");
+        System.out.print("9(2)-QuickCP It "+vetQuickCPIterativo.isOrdenado()+":   ");
         vetQuickCPIterativo.exibir();
         
         System.out.print("10-QuickSort "+vetQuickSort.isOrdenado()+":       ");
@@ -1010,6 +1045,9 @@ public class VetorAlgoritmos
         
         System.out.print("12-Merge1 "+vetMerge1.isOrdenado()+":          ");
         vetMerge1.exibir();
+        
+        System.out.print("12-(2)-Merge1 It "+vetMerge1.isOrdenado()+":   ");
+        vetMerge2Iterativo.exibir();
         
         System.out.print("13-Merge2 "+vetMerge2.isOrdenado()+":          ");
         vetMerge2.exibir();
@@ -1033,23 +1071,41 @@ public class VetorAlgoritmos
         vetTim.exibir();
     }
     
+    
+    public void asdasd() throws IllegalAccessException, IllegalArgumentException
+    {
+        
+    }
+    
     public static void main(String[] args)
     {
-//        inserirDadosVetores();
-//        ordenarVetores();
-//        exibirVetores();
+        inserirDadosVetores();
+        ordenarVetores();
+        exibirVetores();
         
-        List l = new ArrayList();
-        
-        for(int i=0 ; i < 100 ; i++)
-            l.add(i);
-        
-        Collections.shuffle(l);
-        
-        for(int i=1 ; i < l.size() ; i++)
-            if(l.get(i) == l.get(0))
-                break;
-            else
-            System.out.print(" "+ l.get(i));
+//        List l = new ArrayList();
+//        
+//        for(int i=0 ; i < 100 ; i++)
+//            l.add(i);
+//        
+//        Collections.shuffle(l);
+//        
+//        for(int i=1 ; i < l.size() ; i++)
+//            if(l.get(i) == l.get(0))
+//                break;
+//            else
+//            System.out.print(" "+ l.get(i));
+
+//
+//            Class classe;
+//            try {
+//                    classe = Class.forName("br.com.exemplo.automacao.Balanca");
+//                    Method metodo;
+//                    metodo = classe.getDeclaredMethod("getDado",null);
+////                        metodo.invoke(,null);
+//                    console.log(metodo);
+//
+//                            }
+//            catch(Exception ex) {}
     }
 }

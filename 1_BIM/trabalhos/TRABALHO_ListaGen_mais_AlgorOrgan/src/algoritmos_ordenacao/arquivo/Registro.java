@@ -91,4 +91,8 @@ public class Registro
         //------------------------------------------------- +
         //                      Total : 40 + 12 = 52 bytes
     }
+
+    Registro getClone() {
+        return new Registro( this.codigo, this.getNome(), this.idade );
+    }
 }
