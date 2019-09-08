@@ -58,6 +58,18 @@ class Registro
         return(2048);
     }
     
+    public void exibirReg()
+    {
+        int i;
+        System.out.print("[" + numero + "] ");
+//        System.out.print("codigo....." + this.codigo);
+//        System.out.print(" nome.......");
+//        String Snome = new String(nome);
+//        System.out.print(Snome);
+//        System.out.println(" idade......." + this.idade);
+//        System.out.println("----------------------------------");
+    }
+    
     Registro getClone() 
     {
         return new Registro( this.getNumero());

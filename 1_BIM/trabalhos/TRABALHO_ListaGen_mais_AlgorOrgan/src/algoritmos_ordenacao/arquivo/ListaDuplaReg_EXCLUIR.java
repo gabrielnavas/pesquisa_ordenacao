@@ -6,12 +6,12 @@ package algoritmos_ordenacao.arquivo;
     RA: 261741888
 */
 
-public class ListaDuplaReg
+public class ListaDuplaReg_EXCLUIR
 {
-    private NoReg inicio;
-    private NoReg fim;
+    private NoReg_EXCLUIR inicio;
+    private NoReg_EXCLUIR fim;
     
-    public ListaDuplaReg()
+    public ListaDuplaReg_EXCLUIR()
     {
         inicio=null;
         fim = null;
@@ -19,7 +19,7 @@ public class ListaDuplaReg
     
     public void inserirFinal(int cod, String nome, int idade)
     {
-        NoReg novo = new NoReg(cod, nome, idade, fim, null);
+        NoReg_EXCLUIR novo = new NoReg_EXCLUIR(cod, nome, idade, fim, null);
         
         if(fim == null)
             inicio = fim = novo;
@@ -33,7 +33,7 @@ public class ListaDuplaReg
     public int getTl()
     {
         int cont = 0;
-        NoReg no = inicio;
+        NoReg_EXCLUIR no = inicio;
         
         while(no != null)
         {
@@ -46,7 +46,8 @@ public class ListaDuplaReg
     
     public void insercaoDireta()
     {
-        NoReg noI = inicio.getProx(), noAux;
+        NoReg_EXCLUIR noI = inicio.getProx();
+        NoReg_EXCLUIR noAux;
         String auxStr;
         int auxCod, auxIdade;
         int pos;

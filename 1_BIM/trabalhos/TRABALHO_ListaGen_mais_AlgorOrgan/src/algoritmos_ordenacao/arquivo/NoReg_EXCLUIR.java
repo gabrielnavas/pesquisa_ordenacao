@@ -9,18 +9,18 @@ package algoritmos_ordenacao.arquivo;
  *
  * @author navas
  */
-public class NoReg
+public class NoReg_EXCLUIR
 {
     private int cod;
     private String nome;
     private int idade;
 
-    private NoReg prox;
-    private NoReg ant;
+    private NoReg_EXCLUIR prox;
+    private NoReg_EXCLUIR ant;
     
-    public NoReg() { }
+    public NoReg_EXCLUIR() { }
     
-    public NoReg(int cod, String nome, int idade, NoReg ant, NoReg prox) {
+    public NoReg_EXCLUIR(int cod, String nome, int idade, NoReg_EXCLUIR ant, NoReg_EXCLUIR prox) {
         this.cod = cod;
         this.nome = nome;
         this.idade = idade;
@@ -52,19 +52,19 @@ public class NoReg
         this.idade = idade;
     }
 
-    public NoReg getProx() {
+    public NoReg_EXCLUIR getProx() {
         return prox;
     }
 
-    public void setProx(NoReg prox) {
+    public void setProx(NoReg_EXCLUIR prox) {
         this.prox = prox;
     }
 
-    public NoReg getAnt() {
+    public NoReg_EXCLUIR getAnt() {
         return ant;
     }
 
-    public void setAnt(NoReg ant) {
+    public void setAnt(NoReg_EXCLUIR ant) {
         this.ant = ant;
     }
 }
