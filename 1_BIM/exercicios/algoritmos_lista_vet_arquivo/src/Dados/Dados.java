@@ -11,7 +11,7 @@ public class Dados {
     {
         List lista = new ArrayList();
 
-        for(int i = 0; i < 1024; i++)
+        for(int i = 0; i < 30; i++)
             lista.add(i+1);
         
         Collections.shuffle(lista);
@@ -22,7 +22,7 @@ public class Dados {
         lista.toArray(dados);
         
         for(int i=0 ; i < lista.size() ; i++)
-            dados2[i] = dados[i];
+            dados2[i] = dados[i]++;
         
         
 //        return new int[]{2,11,15,5,7,5};

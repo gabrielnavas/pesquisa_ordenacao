@@ -485,14 +485,15 @@ class Vetor {
         int i, j, ini, fim , aux , pivo; 
         
         Pilha p = new Pilha(5000);
+        Pilha p2 = new Pilha(5000);
         
-        p.push(0);
-        p.push(tl-1);
+        p2.push(0);
+        p2.push(tl-1);
 
         while(!p.isEmpty())
         {
-            fim = p.pop();
-            ini = p.pop();
+            fim = p2.pop();
+            ini = p2.pop();
             pivo = vet[(ini+fim)/2];
             
             i=ini;
@@ -515,18 +516,24 @@ class Vetor {
                     j--;
                 }
             }
-
+            
             if(ini < j)
             {
+                p2.push(ini);
+                p2.push(j);
+                
                 p.push(ini);
                 p.push(j);
-                
             }
-
-            else if(i < fim)
-            {                
+            
+            if(i < fim)
+            {
+                p2.push(i);
+                p2.push(fim);
+                
                 p.push(i);
                 p.push(fim);
+                
             }
         }
     }
@@ -990,7 +997,7 @@ public class VetorAlgoritmos
         vetQuickCP.quickCPIterativo();
         vetQuickSort.quickSort();
         vetQuickSortIterativo.quickSortIterativo();
-        vetMerge1.merge1();
+//        vetMerge1.merge1();
         vetMerge2.merge2();
         vetMerge2Iterativo.merge2Iterativo();
         vetShake.shake();
@@ -1079,24 +1086,24 @@ public class VetorAlgoritmos
     
     public static void main(String[] args)
     {
-//        inserirDadosVetores();
-//        ordenarVetores();
-//        exibirVetores();
+        inserirDadosVetores();
+        ordenarVetores();
+        exibirVetores();
         
-        char[] algoritmoName = new char[20];
-        for(int i=0 ; i < algoritmoName.length ; i++)
-            algoritmoName[i] = ' ';
-        
-        String algoritmo = "gabriel";
-        
-        for(int i=0 ; i < algoritmo.length() ; i++)
-            algoritmoName[i] = algoritmo.charAt(i);
-        
-        algoritmo = String.copyValueOf(algoritmoName);
-        
-        System.out.println(algoritmo+": "+algoritmo.length());
-            
-        
+//        char[] algoritmoName = new char[20];
+//        for(int i=0 ; i < algoritmoName.length ; i++)
+//            algoritmoName[i] = ' ';
+//        
+//        String algoritmo = "gabriel";
+//        
+//        for(int i=0 ; i < algoritmo.length() ; i++)
+//            algoritmoName[i] = algoritmo.charAt(i);
+//        
+//        algoritmo = String.copyValueOf(algoritmoName);
+//        
+//        System.out.println(algoritmo+": "+algoritmo.length());
+//            
+//        
         
         
 //        List l = new ArrayList();
