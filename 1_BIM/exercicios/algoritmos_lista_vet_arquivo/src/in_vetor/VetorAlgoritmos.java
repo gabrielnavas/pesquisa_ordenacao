@@ -160,6 +160,7 @@ class Vetor {
                     menor = vet[j];
                     posMenor = j;
                 }
+            
             vet[posMenor] = vet[i];
             vet[i] = menor;
         }
@@ -851,7 +852,7 @@ class Vetor {
             
             //gera frequencia
             for (int i = 0; i < vet.length; i++)
-                    vetAux[(vet[i] / exp) % 10]++;
+                    vetAux[ (vet[i] / exp) % 10]++;
 
             //gera acumulativa
             for (int i = 1; i < 10; i++)
@@ -860,7 +861,7 @@ class Vetor {
             
             //coloca em ordem no vetor
             for (int i = vet.length - 1; i >= 0; i--)
-                    vetSaida[ --vetAux[(vet[i] / exp) % 10]] = vet[i];
+                    vetSaida[ --vetAux[ (vet[i] / exp) % 10]] = vet[i];
 
             for (int i = 0; i < vet.length; i++)
                     vet[i] = vetSaida[i];
@@ -956,7 +957,7 @@ public class VetorAlgoritmos
 
     public static void inserirDadosVetores()
     {   
-        for(int i=0 ; i < dados.length ; i++)
+        for(int i=1 ; i <dados.length ; i++)
         {
             vetInsercaoDireta.inserirFinal(dados[i]);
             vetInsercaoBinaria.inserirFinal(dados[i]);
@@ -1079,10 +1080,6 @@ public class VetorAlgoritmos
     }
     
     
-    public void asdasd() throws IllegalAccessException, IllegalArgumentException
-    {
-        
-    }
     
     public static void main(String[] args)
     {

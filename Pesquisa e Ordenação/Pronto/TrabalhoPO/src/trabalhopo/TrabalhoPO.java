@@ -252,7 +252,23 @@ public class TrabalhoPO {
         compRand=auxRand.getComp();
         movRand=auxRand.getMov();    
         
-        gravaLinhaTabela(compO, "0.00", movO, "0.00", ttotalO, compRev, "0.00", movRev, "0.00", ttotalRev, compRand, "0.00", movRand, "0.00", ttotalRand, "Shell");//tempo execução no arquivo Ordenado já convertido para segundos  
+        gravaLinhaTabela(
+                compO, 
+                "0.00", 
+                movO, 
+                "0.00", 
+                ttotalO, 
+                compRev, 
+                "0.00", 
+                movRev, 
+                "0.00", 
+                ttotalRev, 
+                compRand, 
+                "0.00", 
+                movRand, 
+                "0.00", 
+                ttotalRand, 
+                "Shell");//tempo execução no arquivo Ordenado já convertido para segundos  
         
         
         //Heap

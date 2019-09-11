@@ -268,20 +268,6 @@ class Arquivo
         
     }
     
-//    public void lerArq()
-//    {
-//        int codigo, idade;
-//        String nome;
-//        codigo = Entrada.leInteger("Digite o código");
-//        while (codigo != 0)
-//        {
-//            nome = Entrada.leString("Digite o nome");
-//            idade = Entrada.leInteger("Digite a idade");
-//            inserirRegNoFinal(new Registro(codigo, nome, idade));
-//            codigo = Entrada.leInteger("Digite o c�digo");
-//        }
-//    }
-
     public RandomAccessFile getArquivo() {
         return arquivo;
     }
@@ -1356,6 +1342,7 @@ public class ArquivoAlgoritmos
     static Arquivo arquivoMerge1 = new Arquivo("arquivoMerge1.dat");
     static Arquivo arquivoMerge2 = new Arquivo("arquivoMerge2.dat");
     static Arquivo arquivoComb = new Arquivo("arquivoComb.dat");
+    static Arquivo arquivoCounting = new Arquivo("arquicoCounting.dat");
     static Arquivo arquivoGnome = new Arquivo("arquivoGnome.dat");
     static Arquivo arquivoBucket = new Arquivo("arquivoBucket.dat");
     static Arquivo arquivoRadix = new Arquivo("arquivoRadix.dat");
@@ -1380,6 +1367,7 @@ public class ArquivoAlgoritmos
         new File("arquivoQuickSort.dat").delete();
         new File("arquivoMerge1.dat").delete(); 
         new File("arquivoMerge2.dat").delete();
+        new File("arquicoCounting.dat").delete();
         new File("arquivoComb.dat").delete();
         new File("arquivoGnome.dat").delete();
         new File("arquivoBucket.dat").delete();
@@ -1402,16 +1390,17 @@ public class ArquivoAlgoritmos
 //        arquivoMerge1.geraArquivoRandomico();
 //        arquivoMerge2.geraArquivoRandomico();
 //        arquivoComb.geraArquivoRandomico();
+        arquivoCounting.geraArquivoRandomico();
 //        arquivoGnome.geraArquivoRandomico();
 //        arquivoComb.geraArquivoRandomico();
 //        arquivoBucket.geraArquivoRandomico();
-        arquivoRadix.geraArquivoRandomico();
+//        arquivoRadix.geraArquivoRandomico();
 //        arquivoTim.geraArquivoRandomico();
     }
     
     public static void ordenarListas()
     {
-        arquivoInsercaoDireta.insercaoDireta(); // ORDENOU
+//        arquivoInsercaoDireta.insercaoDireta(); // ORDENOU
 //        arquivoInsercaoBinaria.insercaoBinaria();
 //        arquivoSelecaoDireta.selecaoDireta(); // ORDENOU
 //        arquivoBolha.bolha(); // ORDENOU
@@ -1424,9 +1413,10 @@ public class ArquivoAlgoritmos
 //        arquivoMerge1.merge1();
 //        arquivoMerge2.merge2();
 //        arquivoComb.comb(); // ORDENOU
+        arquivoCounting.counting();
 //        arquivoGnome.gnome(); // ORDENOU
 //        arquivoBucket.bucket(); // ORDENOU
-        arquivoRadix.radix();
+//        arquivoRadix.radix();
 //        arquivoTim.tim();
     }
     
@@ -1470,6 +1460,9 @@ public class ArquivoAlgoritmos
 
         System.out.print("Comb:              ");
         arquivoComb.exibirArq();
+        
+        System.out.print("Counting:              ");
+        arquivoCounting.exibirArq();
 
         System.out.print("Gnome:             ");
         arquivoGnome.exibirArq();
