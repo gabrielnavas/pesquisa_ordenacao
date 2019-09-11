@@ -372,6 +372,50 @@ class Arquivo
         }
     }
     
+    public void insercaoDireta(int ini, int fim)
+    {
+        int i, pos, num;
+        Registro regAux = new Registro();
+        Registro regPos = new Registro();
+        
+        i = ini;
+        while(i < fim)
+        {
+            seekArq(i+1);
+            regAux.leDoArq(arquivo);
+            pos = i+1;
+            
+//            num = vet[i+1];
+//            pos = i+1;
+            seekArq(pos-1);
+            regPos.leDoArq(arquivo);
+
+            while(pos > ini && regAux.getNumero() < regPos.getNumero()/*num < vet[pos-1]*/)
+            {
+                seekArq(pos-1);
+                regPos.leDoArq(arquivo);
+                
+                seekArq(pos);
+                regPos.gravaNoArq(arquivo);
+//                vet[pos] = vet[pos-1];
+                pos--;
+                
+                if(pos > ini)
+                {
+                    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 2 HORAS tentado achar esse erro 
+                    seekArq(pos-1);
+                    regPos.leDoArq(arquivo);
+                }
+            }
+            
+            seekArq(pos);
+            regAux.gravaNoArq(arquivo);
+//            
+//            vet[pos] = num;
+            i++;
+        }
+    }
+    
     
     public int buscaBinaria(int chave, int tl)
     {
@@ -768,7 +812,6 @@ class Arquivo
     {
         quickSort(0, fileSize()-1);
     }
-    
     public void quickSort(int ini, int fim)
     {
         int i=ini, 
@@ -991,6 +1034,8 @@ class Arquivo
         Arquivo aux = new Arquivo("arqaux.bin");
         
         merge2(aux, 0, fileSize()-1);
+        
+        new File("arqaux.bin").delete();
     }
     
     public void merge2(Arquivo arqAux, int ini, int fim)
@@ -1009,59 +1054,61 @@ class Arquivo
     
     public void fusao2(Arquivo arqAux, int ini1, int fim1, int ini2, int fim2)
     {
-        int i, j;
+        int iniAux = ini1;
         
         Registro regI = new Registro();
         Registro regJ = new Registro();
         
         arqAux.seekArq(0);
         
-        i=ini1;
-        j=ini2;
-        while(i <= fim1 && j <= fim2)
+        while(ini1 <= fim1 && ini2 <= fim2)
         {
-            seekArq(i);
+            seekArq(ini1);
             regI.leDoArq(arquivo);
             
-            seekArq(j);
+            seekArq(ini2);
             regJ.leDoArq(arquivo);
             
             if(regI.getNumero() < regJ.getNumero())
             {
                 regI.gravaNoArq(arqAux.getArquivo());
-                i++;
+                ini1++;
             }
             else
             {
                 regJ.gravaNoArq(arqAux.getArquivo());
-                j++;
+                ini2++;
             }
         }
         
-        while(i <= fim1)
+        seekArq(ini1);
+        while(ini1 <= fim1)
         {
-            seekArq(i);
+//            seekArq(ini1);
             regI.leDoArq(arquivo);
             
             regI.gravaNoArq(arqAux.getArquivo());
-            i++;
+            ini1++;
         }
 
-        while(j <= fim2)
+        seekArq(ini2);
+        while(ini2 <= fim2)
         {
-            seekArq(j);
-            regI.leDoArq(arquivo);
+//            seekArq(ini1);
+            regJ.leDoArq(arquivo);
             
-            regI.gravaNoArq(arqAux.getArquivo());
-            j++;
+            regJ.gravaNoArq(arqAux.getArquivo());
+            ini2++;
         }
         
-        for(i=ini1 ; i <= fim2 ; i++)
+        arqAux.seekArq(0);
+        seekArq(iniAux);
+        while(!eof())
         {
-            arqAux.seekArq(i);
+//            arqAux.seekArq(ini);
             regI.leDoArq(arqAux.getArquivo());
             
-            seekArq(i);
+//            seekArq(i);
             regI.gravaNoArq(arquivo);
         }
     }
@@ -1283,11 +1330,6 @@ class Arquivo
         }
     }
     
-    public void insercaoDireta(int ini, int fim)
-    {
-        
-    }
-    
     public void tim()
     {
         int ini1, ini2, fim1, fim2;
@@ -1299,31 +1341,34 @@ class Arquivo
         if(tl < run)
             this.insercaoDireta();
         else
-            for(int i=0 ; i < tl ; i++)
+        {
+            for(int i=0 ; i < tl ; i += run)
             {
                 ini1 = i;
                 fim1 = Math.min(i+run-1, tl-1);
                 insercaoDireta(ini1, fim1);
             }
         
-        seekArq(0);
-        for(int run2 = run ; run2 < tl ; run2 *= run)
-        {
-            for(ini1 = 0 ; ini1 < tl ; ini1 += 2*run)
-            {
-                
-                fim1 = 2*run2-1;
-                ini2 = fim1+1;
-                fim2 = Math.min( ini1 + (2*run2-1), tl-1);
-                
-                 arqAux = new Arquivo("arqAux.bin");
-                
-                //o seekArq vai andando dentro do fusao, quando retira os dados do aux e passa para o arquivo.
-                fusao2(arqAux, ini1, fim1, ini2, fim2);
-            }
+
+//            arqAux = new Arquivo("arqaux.bin");
+//
+//            seekArq(0);
+//            for(int run2 = run ; run2 < tl ; run2 = 2* run)
+//            {
+//                for(ini1 = 0 ; ini1 < tl ; ini1 += 2*run)
+//                {
+//                    fim1 = ini1 + run2-1;
+//
+//                    ini2 = fim1+1;
+//                    fim2 = Math.min( ini1 + (2*run2-1), tl-1);
+//
+//                    //o seekArq vai andando dentro do fusao, quando retira os dados do aux e passa para o arquivo.
+//                    fusao2(arqAux, ini1, fim1, ini2, fim2);
+//                }
+//            }
+//        
+//            new File("arqaux.bin").delete();
         }
-        
-        new File("arqAux.bin").delete();
     }     
 }
 
@@ -1377,7 +1422,7 @@ public class ArquivoAlgoritmos
     
     public static void inserirDadosArquivos()
     {
-        arquivoInsercaoDireta.geraArquivoRandomico();
+//        arquivoInsercaoDireta.geraArquivoRandomico();
 //        arquivoInsercaoBinaria.geraArquivoRandomico();
 //        arquivoSelecaoDireta.geraArquivoRandomico();
 //        arquivoBolha.geraArquivoRandomico();
@@ -1390,12 +1435,12 @@ public class ArquivoAlgoritmos
 //        arquivoMerge1.geraArquivoRandomico();
 //        arquivoMerge2.geraArquivoRandomico();
 //        arquivoComb.geraArquivoRandomico();
-        arquivoCounting.geraArquivoRandomico();
+//        arquivoCounting.geraArquivoRandomico();
 //        arquivoGnome.geraArquivoRandomico();
 //        arquivoComb.geraArquivoRandomico();
 //        arquivoBucket.geraArquivoRandomico();
 //        arquivoRadix.geraArquivoRandomico();
-//        arquivoTim.geraArquivoRandomico();
+        arquivoTim.geraArquivoRandomico();
     }
     
     public static void ordenarListas()
@@ -1413,11 +1458,11 @@ public class ArquivoAlgoritmos
 //        arquivoMerge1.merge1();
 //        arquivoMerge2.merge2();
 //        arquivoComb.comb(); // ORDENOU
-        arquivoCounting.counting();
+//        arquivoCounting.counting();
 //        arquivoGnome.gnome(); // ORDENOU
 //        arquivoBucket.bucket(); // ORDENOU
 //        arquivoRadix.radix();
-//        arquivoTim.tim();
+        arquivoTim.tim();
     }
     
     public static void exibirDadosListas()
@@ -1483,6 +1528,12 @@ public class ArquivoAlgoritmos
         inserirDadosArquivos();
         ordenarListas();
         exibirDadosListas();
+//        
+//        Arquivo arq = new Arquivo("bla");
+//        arq.truncate(15);
+//        System.out.println(arq.fileSize());
+//        
+//        new File("bla").delete();
     }
 
 }

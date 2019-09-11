@@ -498,6 +498,95 @@ public class ListaDupla
         
     }
     
+    public void counting()
+    {
+        int maior, tl = getTl();
+        No noI;
+        
+        maior = getMaior();
+        
+        int[] vetAux = new int[maior+1];
+        int[] vetSaida = new int[tl];
+        
+        //gera frequencia
+        noI = inicio;
+        while(noI != null)
+        {
+            vetAux[ noI.getInfo() ]++;
+            noI = noI.getProx();
+        }
+        
+        //gera acumulativa
+        for(int i=1 ; i < vetAux.length ; i++)
+            vetAux[i] += vetAux[i-1];
+        
+        // gero saida em ordem
+        noI = fim;
+        for(int i=tl-1 ; i >= 0 ; i--)
+        {
+            vetSaida[ --vetAux[ noI.getInfo() ]] = noI.getInfo();
+            noI = noI.getAnt();
+        }
+        //coloco de volta na lista
+        noI = inicio;
+        for(int i=0 ; i < vetSaida.length ; i++)
+        {
+            noI.setInfo( vetSaida[i] );
+            noI = noI.getProx();
+        }
+    }
+    
+    public void radix()
+    {
+        /* 
+            valorNo/[1..10..100....] % 10 = numero n de um número  
+        */
+        int maior, exp, tl;
+        No noI;
+        
+        maior = getMaior();
+        exp = 1;
+        tl = getTl();
+        
+        int[] vetAux;
+        int[] vetSaida = new int[tl];
+        
+        while(maior/exp > 0)
+        {
+            //declarando aqui dentro para nao precisar iniciar com 0 os elementos
+            vetAux = new int[10];
+            
+            //gerar frequencia
+            noI = inicio;
+            for(int i=0 ; i < tl ; i++)
+            {
+                vetAux[ (noI.getInfo()/exp) % 10  ]++;
+                noI = noI.getProx();
+            }
+            
+            //gerar acumulativa
+            for(int i=1 ; i < 10 ; i++)
+                vetAux[i] += vetAux[i-1];
+            
+            //gerar sequencia 
+            noI = fim;
+            for(int i = tl-1 ; i >= 0  ; i--)
+            {
+                vetSaida[ --vetAux[ (noI.getInfo()/exp) % 10 ]] = noI.getInfo();
+                noI = noI.getAnt();
+            }
+            
+            noI = inicio;
+            for(int i=0 ; i < tl ; i++)
+            {
+                noI.setInfo(vetSaida[i]);
+                noI = noI.getProx();
+            }
+            
+            exp = exp * 10;
+        }
+    }
+    
     public void insercaoDireta(int ini, int fim)
     {
         No noI, noPos;

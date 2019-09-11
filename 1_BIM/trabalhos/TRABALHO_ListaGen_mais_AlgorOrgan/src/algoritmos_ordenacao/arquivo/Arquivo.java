@@ -1,6 +1,5 @@
 package algoritmos_ordenacao.arquivo;
 
-import algoritmos_ordenacao.arquivo.lista.ListaDupla;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.UtilApp.ArquivoParams;
+import static utils.UtilApp.ArquivoParams.QUANTIDADE_TOTAL_REG_ARQUIVO;
 
 /*
     Aluno: Gabriel Miguel Navas
@@ -24,9 +24,6 @@ public class Arquivo {
     private int comp;
     private int mov;
     
-    private static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 50;
-//    private static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 1024;
-
     public Arquivo(String nomeArquivo)
     {
         this.nomearquivo = nomeArquivo;
@@ -52,7 +49,6 @@ public class Arquivo {
                 
             for(int i = 0 ; i < tamArqOrigem ; i++)
             {
-                
                 arqOrig.seek(i*Registro.length());
                 reg.leDoArq(arqOrig);
                 
@@ -359,6 +355,81 @@ public class Arquivo {
         }
     }
     
+    //errado
+    public void insercaoDireta2(int ini, int fim)
+    {
+        Registro regPos = new Registro();
+        Registro regAux = new Registro();
+        int pos;
+        
+        for(int i=ini+1 ; i < fim ; i++)
+        {
+            seekArq(i);
+            regAux.leDoArq(arquivo);
+            pos = i;
+            
+            seekArq(i-1);
+            regPos.leDoArq(arquivo);
+            
+            while(pos > ini && regPos.getNumero() > regAux.getNumero())
+            {
+                seekArq(pos-1);
+                regPos.leDoArq(arquivo);
+                
+                seekArq(pos);
+                regPos.gravaNoArq(arquivo);
+                
+                pos--;
+            }
+            
+            seekArq(pos);
+            regAux.gravaNoArq(arquivo);
+        }
+    }
+    
+    public void insercaoDireta(int ini, int fim)
+    {
+        int i, pos, num;
+        Registro regAux = new Registro();
+        Registro regPos = new Registro();
+        
+        i = ini;
+        while(i < fim)
+        {
+            seekArq(i+1);
+            regAux.leDoArq(arquivo);
+            pos = i+1;
+            
+//            num = vet[i+1];
+//            pos = i+1;
+            seekArq(pos-1);
+            regPos.leDoArq(arquivo);
+
+            while(pos > ini && regAux.getNumero() < regPos.getNumero()/*num < vet[pos-1]*/)
+            {
+                seekArq(pos-1);
+                regPos.leDoArq(arquivo);
+                
+                seekArq(pos);
+                regPos.gravaNoArq(arquivo);
+//                vet[pos] = vet[pos-1];
+                pos--;
+                
+                if(pos > ini)
+                {
+                    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 2 HORAS tentado achar esse erro 
+                    seekArq(pos-1);
+                    regPos.leDoArq(arquivo);
+                }
+            }
+            
+            seekArq(pos);
+            regAux.gravaNoArq(arquivo);
+//            
+//            vet[pos] = num;
+            i++;
+        }
+    }
     
     public int buscaBinaria(int chave, int tl)
     {
@@ -366,59 +437,60 @@ public class Arquivo {
             fim = tl-1, 
             meio = fim/2;
         
-        Registro noI = new Registro();
+        Registro noM = new Registro();
         
         seekArq(meio);
-        noI.leDoArq(arquivo);
+        noM.leDoArq(arquivo);
         
-	while(noI.getNumero() != chave && inicio < fim)
+	while(inicio < fim && noM.getNumero() != chave)
 	{
-            if(chave < noI.getNumero())
-                fim=meio-1;
+            if(chave < noM.getNumero())
+                fim = meio-1;
             else
-                inicio=meio+1;
+                inicio = meio+1;
 
-            meio=(fim+inicio)/2;
+            meio = (inicio + fim)/2;
 
             seekArq(meio);
-            noI.leDoArq(arquivo);
+            noM.leDoArq(arquivo);
 	}
         
-	if(noI.getNumero() < chave)
+	if(noM.getNumero() < chave)
             return meio+1;
 	else
             return meio;
     }
     
-//    public void insercaoBinaria()
-//    {
-//        int pos, numero, tl = fileSize();
-//        
-//        Registro no1 = new Registro();
-//        Registro no2 = new Registro();
-//        
-//        for(int i = 1; i < tl; i++)
-//        {
-//            seekArq(i);
-//            no1.leDoArq(arquivo);
-//            
-//            numero = no1.getNumero();
-//            pos = buscaBinaria(no1.getNumero(),i);
-//            
-//            for(int j = i;  j > pos ; j--)
-//            {
-//                seekArq(j-1);
-//                no2.leDoArq(arquivo);
-//                
-//                seekArq(j);
-//                no2.gravaNoArq(arquivo);
-//            }
-//            
-//            no1.setNumero(numero);
-//            seekArq(pos);
-//            no1.gravaNoArq(arquivo);
-//        }
-//    }
+    public void insercaoBinaria()
+    {
+        int pos, tl = fileSize();
+        
+        Registro noPos = new Registro();
+        Registro noAux = new Registro();
+        
+        for(int i = 1; i < tl; i++)
+        {
+            seekArq(i);
+            noPos.leDoArq(arquivo);
+            
+            seekArq(i);
+            noAux.leDoArq(arquivo);
+            pos = buscaBinaria(noAux.getNumero(), i);
+            
+            for(int j=i ; j > pos ; j--)
+            {
+                seekArq(j-1);
+                noPos.leDoArq(arquivo);
+                
+                seekArq(j);
+                noPos.gravaNoArq(arquivo);
+                
+            }
+            
+            seekArq(pos);
+            noAux.gravaNoArq(arquivo);
+        }
+    }
     
     
     public void selecaoDireta()
@@ -871,14 +943,89 @@ public class Arquivo {
         
     }
     
+    
     public void merge2()
     {
+        Arquivo aux = new Arquivo("arqaux.bin");
+        
+        merge2(aux, 0, fileSize()-1);
+        
+        new File("arqaux.bin").delete();
     }
     
-    
-    public void fusao2(Arquivo auxArq, int ini1, int fim1, int ini2, int fim2)
+    public void merge2(Arquivo arqAux, int ini, int fim)
     {
+        int meio;
         
+        if(ini < fim)
+        {
+            meio = (ini+fim) / 2;
+            
+            merge2(arqAux, ini, meio);
+            merge2(arqAux, meio+1, fim);
+            fusao2(arqAux, ini, meio, meio+1, fim);
+        }
+    }
+    
+    public void fusao2(Arquivo arqAux, int ini1, int fim1, int ini2, int fim2)
+    {
+        int iniAux = ini1;
+        
+        Registro regI = new Registro();
+        Registro regJ = new Registro();
+        
+        arqAux.seekArq(0);
+        
+        while(ini1 <= fim1 && ini2 <= fim2)
+        {
+            seekArq(ini1);
+            regI.leDoArq(arquivo);
+            
+            seekArq(ini2);
+            regJ.leDoArq(arquivo);
+            
+            if(regI.getNumero() < regJ.getNumero())
+            {
+                regI.gravaNoArq(arqAux.getArquivo());
+                ini1++;
+            }
+            else
+            {
+                regJ.gravaNoArq(arqAux.getArquivo());
+                ini2++;
+            }
+        }
+        
+        seekArq(ini1);
+        while(ini1 <= fim1)
+        {
+//            seekArq(ini1);
+            regI.leDoArq(arquivo);
+            
+            regI.gravaNoArq(arqAux.getArquivo());
+            ini1++;
+        }
+
+        seekArq(ini2);
+        while(ini2 <= fim2)
+        {
+//            seekArq(ini1);
+            regJ.leDoArq(arquivo);
+            
+            regJ.gravaNoArq(arqAux.getArquivo());
+            ini2++;
+        }
+        
+        arqAux.seekArq(0);
+        seekArq(iniAux);
+        while(!eof())
+        {
+//            arqAux.seekArq(ini);
+            regI.leDoArq(arqAux.getArquivo());
+            
+//            seekArq(i);
+            regI.gravaNoArq(arquivo);
+        }
     }
     
     public void counting()
@@ -918,7 +1065,6 @@ public class Arquivo {
 
         }
         
-        
         //devolver pro arquivo
         seekArq(0);
         for(int i=0 ; i < tl ; i++)
@@ -926,7 +1072,6 @@ public class Arquivo {
             regI = vetSaida[i];
             regI.gravaNoArq(arquivo);
         }
-        
     } 
     
     public void bucket()
@@ -984,7 +1129,7 @@ public class Arquivo {
             new File("bucket"+i).delete();
     }
     
-    public void radix()
+    public void radix_basico()
     {
         int maior, exp, tl;
         
@@ -1014,9 +1159,10 @@ public class Arquivo {
                 vetAux[i] += vetAux[i-1];
             
             //gera o vetor ordenado
-            seekArq(0);
-            for(int i=0 ; i < tl ; i++)
+            
+            for(int i=tl-1 ; i >= 0 ; i--)
             {
+                seekArq(i);
                 regI.leDoArq(arquivo);
                 vetSaida[ --vetAux[ (regI.getNumero()/exp) % 10 ]] = regI.getClone(); 
             }
@@ -1031,6 +1177,64 @@ public class Arquivo {
             
             exp = exp * 10;
         }
+    }
+    
+    public void radix()
+    {
+        int maior, exp, tl, posAux;
+        
+//        Arquivo arqAux = new Arquivo("arqaux");
+        int[] vetAux = new int[10];
+        Arquivo arqSaida = new Arquivo("arqsaida");
+        Registro regI = new Registro();
+        
+        tl = fileSize();
+        arqSaida.truncate(tl);
+
+        maior = getMaior();
+        exp=1;
+        while(maior/exp > 0)
+        {     
+            vetAux = new int[10];
+            
+            //pega frequencia
+            seekArq(0);
+            for(int i=0 ; i < tl ; i++)
+            {
+                regI.leDoArq(arquivo);
+                vetAux[ (regI.getNumero()/exp) % 10 ]++;
+            }
+            
+            //gera acumulativa da frequencia
+            for(int i=1 ; i < 10 ; i++)
+                vetAux[i] += vetAux[i-1];
+            
+            //gera o vetor ordenado
+            for(int i=tl-1 ; i >= 0 ; i--)
+            {
+                seekArq(i);
+                regI.leDoArq(arquivo);
+                
+                posAux = --vetAux[ (regI.getNumero()/exp) % 10 ];
+                arqSaida.seekArq( posAux );
+                regI.gravaNoArq(arqSaida.getArquivo());
+            }
+            
+            //devolve pro arquivo
+            seekArq(0);
+            arqSaida.seekArq(0);
+//            for(int i=0 ; i < tl ; i++)
+            while(!arqSaida.eof())
+            {
+                regI.leDoArq(arqSaida.getArquivo());
+                regI.gravaNoArq(arquivo);
+            }
+            
+            exp = exp * 10;
+        }
+        
+//        new File("arqaux").delete();
+        new File("arqsaida").delete();
     }
     
     public void gnome()
@@ -1102,11 +1306,6 @@ public class Arquivo {
         }
     }
     
-    public void insercaoDireta(int ini, int fim)
-    {
-        
-    }
-    
     public void tim()
     {
         int ini1, ini2, fim1, fim2;
@@ -1118,30 +1317,33 @@ public class Arquivo {
         if(tl < run)
             this.insercaoDireta();
         else
-            for(int i=0 ; i < tl ; i++)
+        {
+            for(int i=0 ; i < tl ; i += run)
             {
                 ini1 = i;
                 fim1 = Math.min(i+run-1, tl-1);
                 insercaoDireta(ini1, fim1);
             }
         
-        seekArq(0);
-        for(int run2 = run ; run2 < tl ; run2 *= run)
-        {
-            for(ini1 = 0 ; ini1 < tl ; ini1 += 2*run)
+
+            arqAux = new Arquivo("arqaux.bin");
+
+            seekArq(0);
+            for(int run2 = run ; run2 < tl ; run2 = 2* run)
             {
-                
-                fim1 = 2*run2-1;
-                ini2 = fim1+1;
-                fim2 = Math.min( ini1 + (2*run2-1), tl-1);
-                
-                 arqAux = new Arquivo("arqAux.bin");
-                
-                //o seekArq vai andando dentro do fusao, quando retira os dados do aux e passa para o arquivo.
-                fusao2(arqAux, ini1, fim1, ini2, fim2);
+                for(ini1 = 0 ; ini1 < tl ; ini1 += 2*run)
+                {
+                    fim1 = ini1 + run2-1;
+
+                    ini2 = fim1+1;
+                    fim2 = Math.min( ini1 + (2*run2-1), tl-1);
+
+                    //o seekArq vai andando dentro do fusao, quando retira os dados do aux e passa para o arquivo.
+                    fusao2(arqAux, ini1, fim1, ini2, fim2);
+                }
             }
-        }
         
-        new File("arqAux.bin").delete();
-    }  
+            new File("arqaux.bin").delete();
+        }
+    }
 }

@@ -121,95 +121,6 @@ public class ListaSimples
     }
     
     
-    public void counting()
-    {
-        int maior, tl = getTl();
-        NoS noI;
-        
-        maior = getMaior();
-        
-        int[] vetAux = new int[maior+1];
-        int[] vetSaida = new int[tl];
-        
-        //gera frequencia
-        noI = inicio;
-        while(noI != null)
-        {
-            vetAux[ noI.getInfo() ]++;
-            noI = noI.getProx();
-        }
-        
-        //gera acumulativa
-        for(int i=1 ; i < vetAux.length ; i++)
-            vetAux[i] += vetAux[i-1];
-        
-        // gero saida em ordem
-        noI = inicio;
-        for(int i=0 ; i < tl ; i++)
-        {
-            vetSaida[ --vetAux[ noI.getInfo() ]] = noI.getInfo();
-            noI = noI.getProx();
-        }
-        //coloco de volta na lista
-        noI = inicio;
-        for(int i=0 ; i < vetSaida.length ; i++)
-        {
-            noI.setInfo( vetSaida[i] );
-            noI = noI.getProx();
-        }
-    }
-    
-    public void radix()
-    {
-        /* 
-            valorNo/[1..10..100....] % 10 = numero n de um número  
-        */
-        int maior, exp, tl;
-        NoS noI;
-        
-        maior = getMaior();
-        exp = 1;
-        tl = getTl();
-        
-        int[] vetAux;
-        int[] vetSaida = new int[tl];
-        
-        while(maior/exp > 0)
-        {
-            //declarando aqui dentro para nao precisar iniciar com 0 os elementos
-            vetAux = new int[10];
-            
-            //gerar frequencia
-            noI = inicio;
-            for(int i=0 ; i < tl ; i++)
-            {
-                vetAux[ (noI.getInfo()/exp) % 10  ]++;
-                noI = noI.getProx();
-            }
-            
-            //gerar acumulativa
-            for(int i=1 ; i < 10 ; i++)
-                vetAux[i] += vetAux[i-1];
-            
-            //gerar sequencia 
-            noI = inicio;
-            for(int i=0 ; i < tl ; i++)
-            {
-                vetSaida[ --vetAux[ (noI.getInfo()/exp) % 10 ]] = noI.getInfo();
-                noI = noI.getProx();
-            }
-            
-            noI = inicio;
-            for(int i=0 ; i < tl ; i++)
-            {
-                noI.setInfo(vetSaida[i]);
-                noI = noI.getProx();
-            }
-            
-            exp = exp * 10;
-        }
-    }
-    
     public void gnome()
     {
         NoS noI, noJ;
@@ -269,5 +180,44 @@ public class ListaSimples
             
             dist = (int) (dist / 1.3);
         }
+    }
+    
+    public void bucket()
+    {
+        int baldes, maior, hash;
+        NoS noI;
+        ListaSimples[] bucket;
+        
+        maior = getMaior();
+        
+        baldes = maior/5;
+        
+        bucket = new ListaSimples[baldes+1];
+        
+        for(int i=0 ; i < bucket.length ; i++)
+            bucket[i] = new ListaSimples();
+        
+        //distruibuir os baldes
+        noI = inicio;
+        while(noI != null)
+        {
+            hash = noI.getInfo()/5;
+            bucket[hash].inserirFinal(noI.getInfo());
+            
+            noI = noI.getProx();
+        }
+        
+        //ordenar os baldes
+        for(int i=0 ; i < bucket.length ; i++)
+            bucket[i].selecaoDireta();
+        
+        //pega os itens dos baldes
+        noI = inicio;
+        for(int i=0 ; i < bucket.length ; i++)
+            for(int j=0 ; j < bucket[i].getTl() ; j++)
+            {
+                noI.setInfo( bucket[i].getNo(j).getInfo() );
+                noI = noI.getProx();
+            }
     }
 }

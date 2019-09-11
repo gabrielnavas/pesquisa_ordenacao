@@ -19,9 +19,9 @@ public class Aplicacao
     static ListaDupla listaMerge2 = new ListaDupla();
     static ListaSimples listaComb = new ListaSimples();
     static ListaSimples listaGnome = new ListaSimples();
-    static ListaDupla listaBucket = new ListaDupla();
-    static ListaSimples listaCounting = new ListaSimples();
-    static ListaSimples listaRadix = new ListaSimples();
+    static ListaSimples listaBucket = new ListaSimples();
+    static ListaDupla listaCounting = new ListaDupla();
+    static ListaDupla listaRadix = new ListaDupla();
     static ListaDupla listaTim = new ListaDupla();
         
     public static void inserirDadosListas()
@@ -107,7 +107,7 @@ public class Aplicacao
         System.out.print("\nGnome:             ");
         listaGnome.exibir();
 
-//        listaBucket.bucket();
+        listaBucket.bucket(); //certo
         System.out.print("\nBucket:            ");
         listaBucket.exibir();
 
@@ -115,7 +115,7 @@ public class Aplicacao
         System.out.print("\nCounting:          ");
         listaCounting.exibir();
 
-        listaRadix.radix();
+        listaRadix.radix(); //certo
         System.out.print("\nRadix:             ");
         listaRadix.exibir();
 
