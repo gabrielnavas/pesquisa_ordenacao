@@ -43,7 +43,7 @@ public class UtilApp {
     
     public static class ArquivoParams
     {
-        public static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 70;
+        public static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 35;
 //        public static final int QUANTIDADE_TOTAL_REG_ARQUIVO = 1024;
         
         public static final boolean DELETA_ARQUIVOS_DADOS = true;

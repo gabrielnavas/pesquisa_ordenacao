@@ -50,7 +50,7 @@ class Vetor {
     
     public Vetor()
     {
-        this.vet = new int[1024];
+        this.vet = new int[Dados.getDadosInt().length];
         tl=0;
     }
 
@@ -998,7 +998,7 @@ public class VetorAlgoritmos
         vetQuickCP.quickCPIterativo();
         vetQuickSort.quickSort();
         vetQuickSortIterativo.quickSortIterativo();
-//        vetMerge1.merge1();
+        vetMerge1.merge1();
         vetMerge2.merge2();
         vetMerge2Iterativo.merge2Iterativo();
         vetShake.shake();

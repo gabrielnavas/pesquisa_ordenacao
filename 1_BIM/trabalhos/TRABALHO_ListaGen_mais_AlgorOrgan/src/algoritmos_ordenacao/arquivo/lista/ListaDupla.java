@@ -1,5 +1,8 @@
 package algoritmos_ordenacao.arquivo.lista;
 
+import algoritmos_ordenacao.arquivo.Arquivo;
+import java.io.File;
+
 /*
     Aluno: Gabriel Miguel Navas
     RA: 261741888
@@ -91,9 +94,29 @@ public class ListaDupla
         return maior;
     }
     
+    public boolean isOrdenado()
+    {
+        int tl = getTl();
+        int i=0;
+        No aux;
+        
+        aux = inicio;
+        while(aux != null && aux.getProx() != null && i < tl 
+                && aux.getInfo() < aux.getProx().getInfo())
+        {
+            i++;
+            aux = aux.getProx();
+        }
+        
+        return i == tl-1;
+    }
+    
     public void exibir()
     {
         No aux = inicio;
+        
+        System.out.print(isOrdenado() + " ");
+        
         while(aux != null)
         {
             System.out.print("["+aux.getInfo()+"]");
@@ -490,12 +513,180 @@ public class ListaDupla
     
     public void merge1()
     {
+        int seq = 1;
+        int tl = getTl();
         
+        ListaDupla l1 = new ListaDupla();
+        ListaDupla l2 = new ListaDupla();
+        
+        while(seq < tl)
+        {
+            particao(l1, l2);
+            fusao1(l1, l2, seq);
+            seq = seq * 2;
+            
+            l1.iniciar();
+            l2.iniciar();
+        }
+        
+    }
+    
+    public void particao(ListaDupla l1, ListaDupla l2)
+    {
+        int meio = getTl()/2;
+        
+        No noI = getNo(0);
+        No noJ = getNo(meio);
+        
+//        for(int i=0 ; i < meio ; i++)
+        while(noJ != null)
+        {
+            l1.inserirFinal(noI.getInfo());
+            l2.inserirFinal(noJ.getInfo());
+            
+            noI = noI.getProx();
+            noJ = noJ.getProx();
+        }
+    }
+    
+    public void fusao1(ListaDupla l1, ListaDupla l2, int seq)
+    {
+        int i, j, k, tl, aux_seq;
+        No noI, noJ, noK;
+        
+        i=0;
+        j=0;
+        k=0;
+        tl = getTl();
+        aux_seq = seq;
+        
+        noI = l1.getNo(i);
+        noJ = l2.getNo(j);
+        noK = getNo(0);
+        
+        while(k < tl)
+        {
+            while(i < seq && j < seq)
+            {
+                if(noI.getInfo() < noJ.getInfo())
+                {
+                    noK.setInfo(noI.getInfo());
+                    
+                    noK = noK.getProx();
+                    noI = noI.getProx();
+                    i++;
+                    k++;
+                }
+                else
+                {
+                    noK.setInfo(noJ.getInfo());
+                    
+                    noK = noK.getProx();
+                    noJ = noJ.getProx();
+                    j++;
+                    k++;
+                }
+            }
+            
+//            noI = getNo(i);
+            while(i < seq)
+            {
+                noK.setInfo(noI.getInfo());
+                
+                noK = noK.getProx();
+                noI = noI.getProx();
+                
+                i++;
+                k++;
+            }
+            
+//            noJ = getNo(j);
+            while(j < seq)
+            {
+                noK.setInfo(noJ.getInfo());
+                
+                noK = noK.getProx();
+                noJ = noJ.getProx();
+
+                j++;
+                k++;
+            }
+            
+            seq = seq + aux_seq;
+        }
     }
     
     public void merge2()
     {
+        ListaDupla auxLista = new ListaDupla();
+        merge2(auxLista, 0, getTl()-1);
+    }
+    
+    public void merge2(ListaDupla auxLista, int esq, int dir)
+    {
+        int meio;
         
+        if(esq < dir)
+        {
+            meio = (esq+dir)/2;
+            
+            merge2(auxLista, esq, meio);
+            merge2(auxLista, meio+1, dir);
+            fusao2(auxLista, esq, meio, meio+1, dir);
+            
+            auxLista.iniciar();
+        }
+    }
+    
+    public void fusao2(ListaDupla auxLista, int ini1, int fim1, int ini2, int fim2)
+    {
+        int auxIni1 = ini1;
+        No noI, noJ;
+        
+        noI = getNo(ini1);
+        noJ = getNo(ini2);
+        
+        while(ini1 <= fim1 && ini2 <= fim2)
+        {
+            if(noI.getInfo() < noJ.getInfo())
+            {
+                auxLista.inserirFinal(noI.getInfo());
+                ini1++;
+                noI = noI.getProx();
+            }
+            else
+            {
+                auxLista.inserirFinal(noJ.getInfo());
+                ini2++;
+                noJ = noJ.getProx();
+            }
+        }
+        
+        noI = getNo(ini1);
+        while(ini1 <= fim1)
+        {
+            auxLista.inserirFinal(noI.getInfo());
+            noI = noI.getProx();
+            ini1++;
+        }
+        
+        noJ = getNo(ini2);
+        while(ini2 <= fim2)
+        {
+            auxLista.inserirFinal(noI.getInfo());
+            noJ = noJ.getProx();
+            ini2++;
+        }
+        
+        noI = getNo(auxIni1);
+        noJ = auxLista.getNo(0);
+        while(noJ != null)
+        {
+            noI.setInfo(noJ.getInfo());
+            
+            noI = noI.getProx();
+            noJ = noJ.getProx();
+        }
     }
     
     public void counting()
@@ -589,15 +780,16 @@ public class ListaDupla
     
     public void insercaoDireta(int ini, int fim)
     {
-        No noI, noPos;
+        No noAux, noPos;
         int pos, aux;
         
-        for(int i=ini ; i < fim ; i++)
+        int i=ini;
+        while(i < fim)
         {
-            noPos = getNo(i).getProx();
-            pos = i;
-            aux = noPos.getInfo();
+            aux = getNo(i+1).getInfo();
+            pos = i+1;
             
+            noPos = getNo(pos);
             while(pos > ini && noPos.getAnt().getInfo() > aux)
             {
                 noPos.setInfo(noPos.getAnt().getInfo());
@@ -605,43 +797,45 @@ public class ListaDupla
                 pos--;
             }
             
-            noPos = getNo(pos);
-            noPos.setInfo(aux);
+            noAux = getNo(pos);
+            noAux.setInfo(aux);
+            
+            i++;
         }
-        
-//         int i, pos, num;
-//
-//        i = ini;
-//        while(i < fim)
-//        {
-//            num = vet[i+1];
-//            pos = i+1;
-//
-//            while(pos > ini && num < vet[pos-1])
-//            {
-//                vet[pos] = vet[pos-1];
-//                pos--;
-//            }
-//            
-//            vet[pos] = num;
-//            i++;
-//        }
     }
     
     public void tim()
     {
         int ini1, ini2, fim1, fim2, tl, run;
+        ListaDupla auxLista = new ListaDupla();
         run = 32;
         tl = getTl();
         
         if(tl < run)
             insercaoDireta();
         else
-        {
+        {                
             for(int i=0 ; i < tl ; i += run)
-                insercaoDireta(i, Math.min( i+run-1, tl-1));
+            {
+                ini1 = i;
+                fim1 = Math.min(i+run-1, tl-1);
+                insercaoDireta(ini1, fim1);
+            }
+        
+            for(int run2 = run ; run2 < tl ; run2 = 2* run)
+                for(ini1 = 0 ; ini1 < tl ; ini1 += 2*run)
+                {
+                    auxLista.iniciar();
+                    
+                    fim1 = ini1 + run2-1;
+
+                    ini2 = fim1+1;
+                    fim2 = Math.min( ini1 + (2*run2-1), tl-1);
+
+                    //o seekArq vai andando dentro do fusao, quando retira os dados do aux e passa para o arquivo.
+                    fusao2(auxLista, ini1, fim1, ini2, fim2);
+                }
+        
         }
     }
-    
-    
 }

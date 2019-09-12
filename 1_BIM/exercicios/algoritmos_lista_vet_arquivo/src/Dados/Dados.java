@@ -11,7 +11,7 @@ public class Dados {
     {
         List lista = new ArrayList();
 
-        for(int i = 0; i < 30; i++)
+        for(int i = 0; i < 200; i++)
             lista.add(i+1);
         
         Collections.shuffle(lista);

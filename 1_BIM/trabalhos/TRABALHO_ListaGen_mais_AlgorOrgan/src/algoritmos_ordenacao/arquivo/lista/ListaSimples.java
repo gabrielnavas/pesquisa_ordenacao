@@ -72,9 +72,41 @@ public class ListaSimples
         return aux;
     }
     
+    public boolean isOrdenado()
+    {
+        int tl = getTl();
+        int i=0;
+        NoS aux;
+        
+        aux = inicio;
+        while(aux != null && aux.getProx() != null && i < tl 
+                && aux.getInfo() < aux.getProx().getInfo())
+        {
+            i++;
+            aux = aux.getProx();
+        }
+        
+        return i == tl-1;
+    }
+    
+    
+    
+//    public void exibir()
+//    {
+//        NoS aux = inicio;
+//        while(aux != null)
+//        {
+//            System.out.print("["+aux.getInfo()+"]");
+//            aux = aux.getProx();
+//        }
+//    }
+    
     public void exibir()
     {
         NoS aux = inicio;
+        
+        System.out.print(isOrdenado() + " ");
+        
         while(aux != null)
         {
             System.out.print("["+aux.getInfo()+"]");

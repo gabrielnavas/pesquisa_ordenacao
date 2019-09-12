@@ -151,7 +151,7 @@ public class Arquivo {
         seekArq(0);
         
         System.out.print(
-            ArquivoParams.gerarStringTamanho(20, 
+            ArquivoParams.gerarStringTamanho(35, 
                     this.nomearquivo + " : ORDENADO? " +
                     isOrdenacao() + " => " 
             )
@@ -355,37 +355,37 @@ public class Arquivo {
         }
     }
     
-    //errado
-    public void insercaoDireta2(int ini, int fim)
-    {
-        Registro regPos = new Registro();
-        Registro regAux = new Registro();
-        int pos;
-        
-        for(int i=ini+1 ; i < fim ; i++)
-        {
-            seekArq(i);
-            regAux.leDoArq(arquivo);
-            pos = i;
-            
-            seekArq(i-1);
-            regPos.leDoArq(arquivo);
-            
-            while(pos > ini && regPos.getNumero() > regAux.getNumero())
-            {
-                seekArq(pos-1);
-                regPos.leDoArq(arquivo);
-                
-                seekArq(pos);
-                regPos.gravaNoArq(arquivo);
-                
-                pos--;
-            }
-            
-            seekArq(pos);
-            regAux.gravaNoArq(arquivo);
-        }
-    }
+//    //errado
+//    public void insercaoDireta2(int ini, int fim)
+//    {
+//        Registro regPos = new Registro();
+//        Registro regAux = new Registro();
+//        int pos;
+//        
+//        for(int i=ini+1 ; i < fim ; i++)
+//        {
+//            seekArq(i);
+//            regAux.leDoArq(arquivo);
+//            pos = i;
+//            
+//            seekArq(i-1);
+//            regPos.leDoArq(arquivo);
+//            
+//            while(pos > ini && regPos.getNumero() > regAux.getNumero())
+//            {
+//                seekArq(pos-1);
+//                regPos.leDoArq(arquivo);
+//                
+//                seekArq(pos);
+//                regPos.gravaNoArq(arquivo);
+//                
+//                pos--;
+//            }
+//            
+//            seekArq(pos);
+//            regAux.gravaNoArq(arquivo);
+//        }
+//    }
     
     public void insercaoDireta(int ini, int fim)
     {
@@ -400,8 +400,6 @@ public class Arquivo {
             regAux.leDoArq(arquivo);
             pos = i+1;
             
-//            num = vet[i+1];
-//            pos = i+1;
             seekArq(pos-1);
             regPos.leDoArq(arquivo);
 
@@ -412,12 +410,10 @@ public class Arquivo {
                 
                 seekArq(pos);
                 regPos.gravaNoArq(arquivo);
-//                vet[pos] = vet[pos-1];
                 pos--;
                 
                 if(pos > ini)
                 {
-                    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 2 HORAS tentado achar esse erro 
                     seekArq(pos-1);
                     regPos.leDoArq(arquivo);
                 }
@@ -425,8 +421,7 @@ public class Arquivo {
             
             seekArq(pos);
             regAux.gravaNoArq(arquivo);
-//            
-//            vet[pos] = num;
+
             i++;
         }
     }
@@ -657,7 +652,7 @@ public class Arquivo {
                         reg1.gravaNoArq(arquivo);
                     
 
-                        if(j-dist >= i)
+                        if(j-dist >= 0)
                         {   
                             mov=+2;
 
@@ -670,7 +665,7 @@ public class Arquivo {
                             comp++;
 
                             k=j;
-                            while(k-dist >= i && reg1.getNumero() < reg2.getNumero())
+                            while(k-dist >= 0 && reg1.getNumero() < reg2.getNumero())
                             {
                                 mov=+2;
 
@@ -682,7 +677,7 @@ public class Arquivo {
 
                                 k -= dist;
 
-                                if(k-dist >= i)
+                                if(k-dist >= 0)
                                 {
                                     mov=+2;
 

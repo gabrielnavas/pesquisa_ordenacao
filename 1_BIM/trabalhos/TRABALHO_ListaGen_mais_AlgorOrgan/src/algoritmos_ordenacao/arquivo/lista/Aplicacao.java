@@ -26,7 +26,7 @@ public class Aplicacao
         
     public static void inserirDadosListas()
     {        
-        for(int i=50 ; i > 0 ; i--)
+        for(int i=64 ; i > 0 ; i--)
         {
             listaInsercaoDireta.inserirFinal(i);
             listaInsercaoBinaria.inserirFinal(i);
@@ -95,11 +95,11 @@ public class Aplicacao
         System.out.print("\nMerge1:            ");
         listaMerge1.exibir();
 
-        listaMerge2.merge2();
+        listaMerge2.merge2(); //certo
         System.out.print("\nMerge2:            ");
         listaMerge2.exibir();
 
-        listaComb.comb();  //certo
+        listaComb.comb();   //certo
         System.out.print("\nComb:              ");
         listaComb.exibir();
 

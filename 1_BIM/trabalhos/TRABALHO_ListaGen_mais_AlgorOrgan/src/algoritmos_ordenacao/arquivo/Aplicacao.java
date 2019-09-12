@@ -49,7 +49,7 @@ public class Aplicacao
         auxRand = new Arquivo("auxRand.bin");
         
         tabela = new Arquivo("tabela"/* + new Date().toString()+ ".dat"*/);
-//        gerarCabecalhoTabela();
+        gerarCabecalhoTabela();
         
         //gera os dados nos arquivos
         arqOrd.geraArquivoOrdenado();
@@ -69,9 +69,9 @@ public class Aplicacao
             );
             
             tabela.getArquivo().writeBytes(
-                "\t\t\t"+"Comp.Prog. Comp.Equa. Mov.Prog. Mov.Equa. "
-                +"Tempo|Comp.Prog. Comp.Equa. Mov.Prog. Mov.Equa. Tempo|Comp.Prog. Comp."
-                + "Equa. Mov.Prog. Mov.Equa. Tempo "+"\n"
+                "\t\t\t"+"Comp.Prog. | Comp.Equa. | Mov.Prog. | Mov.Equa. |"
+                +" Tempo | Comp.Prog. | Comp.Equa. | Mov.Prog. | Mov.Equa. | Tempo | Comp.Prog. | Comp."
+                + "Equa. | Mov.Prog. | Mov.Equa. | Tempo "+"\n"
             );
         } 
         catch (IOException ex)  { }
@@ -89,9 +89,9 @@ public class Aplicacao
         try
         {
             tabela.writeBytes(algoritmo 
-                + "\t|" + compProgOrd  +"\t"+ compEquaOrd   +"\t"+ movProgOrd  +"\t"+ tempoOrd
-                + "\t|" + compProgRev  +"\t"+ compEquaRev   +"\t"+ movProgRev  +"\t"+ tempoRev
-                + "\t|" + compProgRand +"\t"+ compEquaRand  +"\t"+ movProgRand +"\t"+ tempoRand
+                + "\t|" + compProgOrd  +"\t      "+ compEquaOrd   +"\t "+ movProgOrd  +"\t      "+ tempoOrd
+                + "\t    |" + compProgRev  +"\t    "+ compEquaRev   +"\t    "+ movProgRev  +"\t    "+ tempoRev
+                + "\t    |" + compProgRand +"\t    "+ compEquaRand  +"\t    "+ movProgRand +"\t    "+ tempoRand
                 + "\n"
             );
         }
@@ -129,28 +129,29 @@ public class Aplicacao
         tini = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
         
         System.out.println("----------- GERANDO LINHA DO: "+algName+" ORDENADO ------ ");
-        
-        switch(algTipo)
-        {
-            case AlgoritmoNum.INSERCAO_DIRETA:   arqOrd.insercaoDireta(); break;
-            case AlgoritmoNum.INSERCAO_BINARIA:  arqOrd.insercaoBinaria(); break;
-            case AlgoritmoNum.SELECAO_DIRETA:    arqOrd.selecaoDireta(); break;
-            case AlgoritmoNum.BOLHA:             arqOrd.bolha(); break;
-            case AlgoritmoNum.SHAKE:             arqOrd.shake(); break;
-            case AlgoritmoNum.HEAP:              arqOrd.heap();break;
-            case AlgoritmoNum.QUICKCP:           arqOrd.quickCP();break;
-            case AlgoritmoNum.QUICKSP:           arqOrd.quickSP();break;
-            case AlgoritmoNum.MERGE1:            arqOrd.merge1();break;
-            case AlgoritmoNum.MERGE2:            arqOrd.merge2();break;
-            case AlgoritmoNum.COUNTING:          arqOrd.counting();break;
-            case AlgoritmoNum.BUCKET:            arqOrd.bucket();break;
-            case AlgoritmoNum.RADIX:             arqOrd.radix();break;
-            case AlgoritmoNum.COMB:              arqOrd.comb();break;
-            case AlgoritmoNum.GNOME:             arqOrd.gnome();break;
-            case AlgoritmoNum.TIM:               arqOrd.tim();break;
-            
-            default: System.out.println("Algoritmo não existe.");
-        }
+//        
+//        switch(algTipo)
+//        {
+//            case AlgoritmoNum.INSERCAO_DIRETA:   arqOrd.insercaoDireta(); break;
+//            case AlgoritmoNum.INSERCAO_BINARIA:  arqOrd.insercaoBinaria(); break;
+//            case AlgoritmoNum.SELECAO_DIRETA:    arqOrd.selecaoDireta(); break;
+//            case AlgoritmoNum.BOLHA:             arqOrd.bolha(); break;
+//            case AlgoritmoNum.SHAKE:             arqOrd.shake(); break;
+//            case AlgoritmoNum.SHELL:              auxRand.shell(); break;
+//            case AlgoritmoNum.HEAP:              arqOrd.heap();break;
+//            case AlgoritmoNum.QUICKCP:           arqOrd.quickCP();break;
+//            case AlgoritmoNum.QUICKSP:           arqOrd.quickSP();break;
+//            case AlgoritmoNum.MERGE1:            arqOrd.merge1();break;
+//            case AlgoritmoNum.MERGE2:            arqOrd.merge2();break;
+//            case AlgoritmoNum.COUNTING:          arqOrd.counting();break;
+//            case AlgoritmoNum.BUCKET:            arqOrd.bucket();break;
+//            case AlgoritmoNum.RADIX:             arqOrd.radix();break;
+//            case AlgoritmoNum.COMB:              arqOrd.comb();break;
+//            case AlgoritmoNum.GNOME:             arqOrd.gnome();break;
+//            case AlgoritmoNum.TIM:               arqOrd.tim();break;
+//            
+//            default: System.out.println("Algoritmo não existe.");
+//        }
         
         tfim = System.currentTimeMillis(); //método para pegar a hora atual em milisegundos
         compO = arqOrd.getComp();
@@ -168,27 +169,28 @@ public class Aplicacao
         
         
         System.out.println("----------- GERANDO LINHA DO: "+algName+" REVERSO ------ ");
-        
-        switch(algTipo)
-        {
-            case AlgoritmoNum.INSERCAO_DIRETA:    auxRev.insercaoDireta(); break;
-            case AlgoritmoNum.INSERCAO_BINARIA:   auxRev.insercaoBinaria(); break;
-            case AlgoritmoNum.SELECAO_DIRETA:     auxRev.selecaoDireta(); break;
-            case AlgoritmoNum.BOLHA:              auxRev.bolha(); break;
-            case AlgoritmoNum.SHAKE:              auxRev.shake(); break;
-            case AlgoritmoNum.HEAP:               auxRev.heap();break;
-            case AlgoritmoNum.QUICKCP:            auxRev.quickCP();break;
-            case AlgoritmoNum.QUICKSP:            auxRev.quickSP();break;
-            case AlgoritmoNum.MERGE1:             auxRev.merge1();break;
-            case AlgoritmoNum.MERGE2:             auxRev.merge2();break;
-            case AlgoritmoNum.COUNTING:           auxRev.counting();break;
-            case AlgoritmoNum.BUCKET:             auxRev.bucket();break;
-            case AlgoritmoNum.RADIX:              auxRev.radix();break;
-            case AlgoritmoNum.COMB:               auxRev.comb();break;
-            case AlgoritmoNum.GNOME:              auxRev.gnome();break;
-            case AlgoritmoNum.TIM:                auxRev.tim();break;
-        }
-        
+//        
+//        switch(algTipo)
+//        {
+//            case AlgoritmoNum.INSERCAO_DIRETA:    auxRev.insercaoDireta(); break;
+//            case AlgoritmoNum.INSERCAO_BINARIA:   auxRev.insercaoBinaria(); break;
+//            case AlgoritmoNum.SELECAO_DIRETA:     auxRev.selecaoDireta(); break;
+//            case AlgoritmoNum.BOLHA:              auxRev.bolha(); break;
+//            case AlgoritmoNum.SHAKE:              auxRev.shake(); break;
+//            case AlgoritmoNum.SHELL:              auxRand.shell(); break;
+//            case AlgoritmoNum.HEAP:               auxRev.heap();break;
+//            case AlgoritmoNum.QUICKCP:            auxRev.quickCP();break;
+//            case AlgoritmoNum.QUICKSP:            auxRev.quickSP();break;
+//            case AlgoritmoNum.MERGE1:             auxRev.merge1();break;
+//            case AlgoritmoNum.MERGE2:             auxRev.merge2();break;
+//            case AlgoritmoNum.COUNTING:           auxRev.counting();break;
+//            case AlgoritmoNum.BUCKET:             auxRev.bucket();break;
+//            case AlgoritmoNum.RADIX:              auxRev.radix();break;
+//            case AlgoritmoNum.COMB:               auxRev.comb();break;
+//            case AlgoritmoNum.GNOME:              auxRev.gnome();break;
+//            case AlgoritmoNum.TIM:                auxRev.tim();break;
+//        }
+//        
         tfim = System.currentTimeMillis();
         ttotalRev = tfim - tini;
         compRev = auxRev.getComp();
@@ -206,26 +208,27 @@ public class Aplicacao
         
         System.out.println("----------- GERANDO LINHA DO: "+algName+" RANDOMICO ------ ");
 
-        
-        switch(algTipo)
-        {
-            case AlgoritmoNum.INSERCAO_DIRETA:    auxRand.insercaoDireta(); break;
-            case AlgoritmoNum.INSERCAO_BINARIA:   auxRand.insercaoBinaria(); break;
-            case AlgoritmoNum.SELECAO_DIRETA:     auxRand.selecaoDireta(); break;
-            case AlgoritmoNum.BOLHA:              auxRand.bolha(); break;
-            case AlgoritmoNum.SHAKE:              auxRand.shake(); break;
-            case AlgoritmoNum.HEAP:               auxRand.heap();break;
-            case AlgoritmoNum.QUICKCP:            auxRand.quickCP();break;
-            case AlgoritmoNum.QUICKSP:            auxRand.quickSP();break;
-            case AlgoritmoNum.MERGE1:             auxRand.merge1();break;
-            case AlgoritmoNum.MERGE2:             auxRand.merge2();break;
-            case AlgoritmoNum.COUNTING:           auxRand.counting();break;
-            case AlgoritmoNum.BUCKET:             auxRand.bucket();break;
-            case AlgoritmoNum.RADIX:              auxRand.radix();break;
-            case AlgoritmoNum.COMB:               auxRand.comb();break;
-            case AlgoritmoNum.GNOME:              auxRand.gnome();break;
-            case AlgoritmoNum.TIM:                auxRand.tim();break;
-        }
+//        
+//        switch(algTipo)
+//        {
+//            case AlgoritmoNum.INSERCAO_DIRETA:    auxRand.insercaoDireta(); break;
+//            case AlgoritmoNum.INSERCAO_BINARIA:   auxRand.insercaoBinaria(); break;
+//            case AlgoritmoNum.SELECAO_DIRETA:     auxRand.selecaoDireta(); break;
+//            case AlgoritmoNum.BOLHA:              auxRand.bolha(); break;
+//            case AlgoritmoNum.SHAKE:              auxRand.shake(); break;
+//            case AlgoritmoNum.SHELL:              auxRand.shell(); break;
+//            case AlgoritmoNum.HEAP:               auxRand.heap();break;
+//            case AlgoritmoNum.QUICKCP:            auxRand.quickCP();break;
+//            case AlgoritmoNum.QUICKSP:            auxRand.quickSP();break;
+//            case AlgoritmoNum.MERGE1:             auxRand.merge1();break;
+//            case AlgoritmoNum.MERGE2:             auxRand.merge2();break;
+//            case AlgoritmoNum.COUNTING:           auxRand.counting();break;
+//            case AlgoritmoNum.BUCKET:             auxRand.bucket();break;
+//            case AlgoritmoNum.RADIX:              auxRand.radix();break;
+//            case AlgoritmoNum.COMB:               auxRand.comb();break;
+//            case AlgoritmoNum.GNOME:              auxRand.gnome();break;
+//            case AlgoritmoNum.TIM:                auxRand.tim();break;
+//        }
         tfim = System.currentTimeMillis();
         ttotalRand = tfim - tini;
         compRand = auxRand.getComp();
@@ -273,7 +276,7 @@ public class Aplicacao
 //        for(int i=0 ; i < algoritmos.length ; i++)
 //            gerarLinha(algoritmos[i], i);
         
-        gerarLinha("Tim", AlgoritmoNum.TIM);
+        gerarLinha("Shell", AlgoritmoNum.TIM);
     }
     
     public static void main(String[] args)
@@ -297,10 +300,10 @@ public class Aplicacao
             calculo = (float) (n - 1.00) ;
 
         else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + n - 2) - 1.00);
+            calculo = (float) ((Math.pow(n, 2) + n - 2)/4);
 
         else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + n - 4) - 1.00);
+            calculo = (float) ((Math.pow(n, 2) + n - 4)/4);
 
         calculoStr = String.format("%.2f", calculo);
         
@@ -332,13 +335,13 @@ public class Aplicacao
         float calculo = 0.00f;
         
         if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (n - 1.00) ;
+            calculo = (float) (n * (Math.log(n) - Math.log(2.71828) + 0.5));
 
         else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + n - 2) - 1.00);
+            calculo = (float) (n * (Math.log(n) - Math.log(2.71828) + 0.5));
 
         else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + n - 4) - 1.00);
+            calculo = (float) (n * (Math.log(n) - Math.log(2.71828) + 0.5));
 
         calculoStr = String.format("%.2f", calculo);
         
@@ -370,13 +373,13 @@ public class Aplicacao
         float calculo = 0.00f;
         
         if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (n - 1.00) ;
+            calculo = (float) (Math.pow(n, 2) - n / 2);
 
         else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + n - 2) - 1.00);
+            calculo = (float) (Math.pow(n, 2) - n / 2);
 
         else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + n - 4) - 1.00);
+            calculo = (float) (Math.pow(n, 2) - n / 2);
 
         calculoStr = String.format("%.2f", calculo);
         
@@ -389,89 +392,51 @@ public class Aplicacao
         float calculo = 0.00f;
         
         if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (3 * (n - 1.00)) ;
+            calculo = (float) (3 * (n - 1.0)) ;
 
         else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + (9*n) - 10) / 4);
+            calculo = (float) (Math.pow(n, 2) / 4 + 3 * (n - 1));
 
         else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + (3*n) - 4) / 2);
+            calculo = (float) (n * (n * Math.log(n) + 0.577216));
         
         calculoStr = String.format("%.2f", calculo);
         
         return calculoStr;
     }
     
-    private String calcCompBolha(int n, int tipoOrdenacao)
+    private String calcCompBolhaAndShake(int n, int tipoOrdenacao)
     {
         String calculoStr = "0.00";
         float calculo = 0.00f;
         
         if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (n - 1.00) ;
+            calculo = (float) ( (Math.pow(n, 2)  -  n) / 2);
 
         else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + n - 2) - 1.00);
+            calculo = (float) ( (Math.pow(n, 2)  -  n) / 2);
 
         else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + n - 4) - 1.00);
+            calculo = (float) ( (Math.pow(n, 2)  -  n) / 2);
 
         calculoStr = String.format("%.2f", calculo);
         
         return calculoStr;
     }
     
-    private String calcMovBolha(int n, int tipoOrdenacao)
+    private String calcMovBolhaAndShake(int n, int tipoOrdenacao)
     {
         String calculoStr = "0.00";
         float calculo = 0.00f;
         
         if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (3 * (n - 1.00)) ;
+            calculo = (float) (0.00f) ;
 
         else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + (9*n) - 10) / 4);
+            calculo = (float) ( 3 * (Math.pow(n, 2) - n) / 2);
 
         else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + (3*n) - 4) / 2);
-        
-        calculoStr = String.format("%.2f", calculo);
-        
-        return calculoStr;
-    }
-    
-    private String calcCompShake(int n, int tipoOrdenacao)
-    {
-        String calculoStr = "0.00";
-        float calculo = 0.00f;
-        
-        if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (n - 1.00) ;
-
-        else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + n - 2) - 1.00);
-
-        else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + n - 4) - 1.00);
-
-        calculoStr = String.format("%.2f", calculo);
-        
-        return calculoStr;
-    }
-    
-    private String calcMovShake(int n, int tipoOrdenacao)
-    {
-        String calculoStr = "0.00";
-        float calculo = 0.00f;
-        
-        if(tipoOrdenacao == TipoOrdenado.ORDENADO)
-            calculo = (float) (3 * (n - 1.00)) ;
-
-        else if(tipoOrdenacao == TipoOrdenado.RANDOMICO)
-            calculo = (float) ((Math.pow(n, 2) + (9*n) - 10) / 4);
-
-        else if(tipoOrdenacao == TipoOrdenado.REVERSO)
-            calculo = (float) ((Math.pow(n, 2) + (3*n) - 4) / 2);
+            calculo = (float) ( 3 * (Math.pow(n, 2) - n) / 4);
         
         calculoStr = String.format("%.2f", calculo);
         
